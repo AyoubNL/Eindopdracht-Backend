@@ -2,6 +2,7 @@ package nl.novi.backend_it_helpdesk.models;
 
 import jakarta.persistence.*;
 import nl.novi.backend_it_helpdesk.enums.PriorityTicketEnum;
+import nl.novi.backend_it_helpdesk.enums.StatusTicketEnum;
 
 import java.util.Date;
 
@@ -16,5 +17,6 @@ public class Ticket {
     private String description;
     private Date createdAt;
     private PriorityTicketEnum priority;
+    private StatusTicketEnum status;
 
 }

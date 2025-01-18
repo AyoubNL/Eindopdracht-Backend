@@ -4,5 +4,5 @@ public enum PriorityTicketEnum {
     P1_Organization,
     P2_Departement,
     P3_Team,
-    P4_Individual;
+    P4_Individual,
 }
