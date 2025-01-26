@@ -31,7 +31,4 @@ public class Ticket {
     @ManyToOne
     private User createdBy;
 
-    @ManyToOne
-    private User assignedTo;
-
 }
