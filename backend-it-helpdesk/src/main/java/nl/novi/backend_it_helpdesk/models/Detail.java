@@ -16,4 +16,9 @@ public class Detail {
     private PriorityTicketEnum priority;
     private TypeTicketEnum type;
 
+
+
+
+
+
 }
