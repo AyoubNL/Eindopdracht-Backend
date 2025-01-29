@@ -3,6 +3,9 @@ package nl.novi.backend_it_helpdesk.models;
 import jakarta.persistence.*;
 import nl.novi.backend_it_helpdesk.enums.StatusTicketEnum;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Entity
 @Table(name = "fixes")
 public class Fix {
@@ -13,5 +16,8 @@ public class Fix {
     private String solution;
     private String feedback;
     private StatusTicketEnum status;
+
+    @OneToMany(mappedBy = "fix")
+    List<Ticket> tickets = new ArrayList<>();
 
 }

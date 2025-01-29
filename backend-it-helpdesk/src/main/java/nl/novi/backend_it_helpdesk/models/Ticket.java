@@ -16,7 +16,6 @@ public class Ticket {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private Date createdAt;
-    private Date closedAt;
     private PriorityTicketEnum priority;
 
     @ManyToOne(cascade = CascadeType.ALL)
@@ -26,7 +25,6 @@ public class Ticket {
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "detail_id")
     private Detail detail;
-
 
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "fix_id")

@@ -4,6 +4,9 @@ import jakarta.persistence.*;
 import nl.novi.backend_it_helpdesk.enums.PriorityTicketEnum;
 import nl.novi.backend_it_helpdesk.enums.TypeTicketEnum;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Entity
 @Table(name = "details")
 public class Detail {
@@ -15,6 +18,9 @@ public class Detail {
     private String description;
     private PriorityTicketEnum priority;
     private TypeTicketEnum type;
+
+    @OneToMany(mappedBy = "detail")
+    List<Ticket> tickets = new ArrayList<>();
 
 
 
