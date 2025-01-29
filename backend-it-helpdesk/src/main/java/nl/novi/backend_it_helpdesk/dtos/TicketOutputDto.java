@@ -13,10 +13,12 @@ public class TicketOutputDto {
     private Date createdAt;
     private Date closedAt;
     private PriorityTicketEnum priority;
-    private Category category;
-    private Detail detail;
+    private CategoryOutputDto category;
+    private DetailOutputDto detail;
     private Fix fix;
     List<Screenshot> screenshots = new ArrayList<>();
     private User createdBy;
+
+    //DTO gebruiken voor category, fix, detail
 
 }
