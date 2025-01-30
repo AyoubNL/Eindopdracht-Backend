@@ -23,8 +23,6 @@ public class User {
 
     private String email;
 
-    private String departement;
-
     @OneToMany(mappedBy = "username",
             cascade = CascadeType.ALL,
             orphanRemoval = true,

@@ -16,6 +16,7 @@ public class Ticket {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private Date createdAt;
+    @Enumerated(EnumType.STRING)
     private PriorityTicketEnum priority;
 
     @ManyToOne(cascade = CascadeType.ALL)

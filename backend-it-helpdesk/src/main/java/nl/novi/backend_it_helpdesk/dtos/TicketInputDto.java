@@ -8,7 +8,7 @@ public class TicketInputDto {
     private PriorityTicketEnum priority;
     private CategoryInputDto category;
     private DetailInputDto detail;
-    private Fix fix;
+    private FixInputDto fix;
     private User createdBy;
 
 }

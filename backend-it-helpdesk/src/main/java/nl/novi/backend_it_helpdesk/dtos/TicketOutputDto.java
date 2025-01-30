@@ -15,7 +15,7 @@ public class TicketOutputDto {
     private PriorityTicketEnum priority;
     private CategoryOutputDto category;
     private DetailOutputDto detail;
-    private Fix fix;
+    private FixOutputDto fix;
     List<Screenshot> screenshots = new ArrayList<>();
     private User createdBy;
 

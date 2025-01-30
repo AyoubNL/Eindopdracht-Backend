@@ -16,7 +16,9 @@ public class Detail {
     private Long id;
     private String title;
     private String description;
+    @Enumerated(EnumType.STRING)
     private PriorityTicketEnum priority;
+    @Enumerated(EnumType.STRING)
     private TypeTicketEnum type;
 
     @OneToMany(mappedBy = "detail")

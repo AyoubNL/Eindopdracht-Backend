@@ -15,6 +15,7 @@ public class Fix {
     private Long id;
     private String solution;
     private String feedback;
+    @Enumerated(EnumType.STRING)
     private StatusTicketEnum status;
 
     @OneToMany(mappedBy = "fix")
