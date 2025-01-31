@@ -16,13 +16,20 @@ public class Ticket {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private Date createdAt;
-    private Date closedAt;
-
+    @Enumerated(EnumType.STRING)
     private PriorityTicketEnum priority;
 
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "category_id")
     private Category category;
+
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "detail_id")
+    private Detail detail;
+
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "fix_id")
+    private Fix fix;
 
     @OneToMany(mappedBy = "ticket", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonIgnoreProperties(value = {"contents","contentType"} )

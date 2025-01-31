@@ -2,6 +2,7 @@ package nl.novi.backend_it_helpdesk.models;
 
 import jakarta.persistence.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -12,9 +13,10 @@ public class Category {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
     private String categoryName;
+    private String subCategoryName;
 
     @OneToMany(mappedBy = "category")
-    private List<Ticket> tickets;
+    List<Ticket> tickets = new ArrayList<>();
 
 
 }
