@@ -7,7 +7,6 @@ public class UserOutputDto {
 
     private String username;
 
-    @Column(nullable = false, length = 255)
     private String password;
     private UserRoleEnum role;
     private String email;

@@ -19,6 +19,4 @@ public class TicketOutputDto {
     List<Screenshot> screenshots = new ArrayList<>();
     private User createdBy;
 
-    //DTO gebruiken voor category, fix, detail
-
 }
