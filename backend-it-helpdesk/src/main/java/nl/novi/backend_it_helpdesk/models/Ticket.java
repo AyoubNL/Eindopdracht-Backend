@@ -38,4 +38,81 @@ public class Ticket {
     @ManyToOne
     private User createdBy;
 
+
+    public Ticket() {}
+
+    public Ticket(Long id, Date createdAt, PriorityTicketEnum priority, Category category, Detail detail, Fix fix, List<Screenshot> screenshots, User createdBy) {
+        this.id = id;
+        this.createdAt = createdAt;
+        this.priority = priority;
+        this.category = category;
+        this.detail = detail;
+        this.fix = fix;
+        this.screenshots = screenshots;
+        this.createdBy = createdBy;
+    }
+
+    public Date getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(Date createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public PriorityTicketEnum getPriority() {
+        return priority;
+    }
+
+    public void setPriority(PriorityTicketEnum priority) {
+        this.priority = priority;
+    }
+
+    public Category getCategory() {
+        return category;
+    }
+
+    public void setCategory(Category category) {
+        this.category = category;
+    }
+
+    public Detail getDetail() {
+        return detail;
+    }
+
+    public void setDetail(Detail detail) {
+        this.detail = detail;
+    }
+
+    public Fix getFix() {
+        return fix;
+    }
+
+    public void setFix(Fix fix) {
+        this.fix = fix;
+    }
+
+    public List<Screenshot> getScreenshots() {
+        return screenshots;
+    }
+
+    public void setScreenshots(List<Screenshot> screenshots) {
+        this.screenshots = screenshots;
+    }
+
+    public User getCreatedBy() {
+        return createdBy;
+    }
+
+    public void setCreatedBy(User createdBy) {
+        this.createdBy = createdBy;
+    }
 }

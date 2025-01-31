@@ -11,4 +11,7 @@ public class TicketInputDto {
     private FixInputDto fix;
     private User createdBy;
 
+
+
+
 }
