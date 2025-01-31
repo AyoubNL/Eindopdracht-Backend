@@ -5,19 +5,32 @@ import nl.novi.backend_it_helpdesk.models.Ticket;
 
 public class TicketMapper {
 
-    public static Ticket transferToDto(TicketOutputDto ticketOutputDto) {
+    public static TicketOutputDto transferToDto(Ticket ticket) {
 
-        Ticket ticket = new Ticket();
+        TicketOutputDto dto = new TicketOutputDto();
 
-        ticket.setId(ticketOutputDto.getId());
-        ticket.setCreatedAt(ticketOutputDto.getCreatedAt());
-        ticket.setCreatedBy(ticketOutputDto.getCreatedBy());
-        ticket.setPriority(ticketOutputDto.getPriority());
-        ticket.setCategory(ticketOutputDto.getCategory());
-        ticket.setDetail(ticketOutputDto.getDetail());
-        ticket.setFix(ticketOutputDto.getFix());
-        ticket.setScreenshots(ticketOutputDto.getScreenshots());
+        dto.setId(ticket.getId());
+        dto.setCreatedAt(ticket.getCreatedAt());
+        dto.setCreatedBy(ticket.getCreatedBy());
+        dto.setPriority(ticket.getPriority());
+        dto.setScreenshots(ticket.getScreenshots());
 
+
+        if(ticket.getCategory() != null) {
+            dto.setCategoryDto(CategoryMapper.transferToDto(ticket.getCategory()));
+        }
+
+        if(ticket.getDetail() != null) {
+            dto.setDetailDto(DetailMapper.transferToDto(ticket.getDetail()));
+        }
+
+
+
+        dto.setCategoryDto(ticket.getCategory());
+        dto.setDetailDto(ticket.getDetail());
+        dto.setFixDto(ticket.getFix());
+
+        return dto;
     }
 
 

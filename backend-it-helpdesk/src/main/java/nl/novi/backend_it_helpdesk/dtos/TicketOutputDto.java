@@ -14,24 +14,23 @@ public class TicketOutputDto {
     private User createdBy;
     private Date closedAt;
     private PriorityTicketEnum priority;
-    private CategoryOutputDto category;
-    private DetailOutputDto detail;
-    private FixOutputDto fix;
+    private CategoryOutputDto categoryDto;
+    private DetailOutputDto detailDto;
+    private FixOutputDto fixDto;
     List<Screenshot> screenshots = new ArrayList<>();
-
 
     public TicketOutputDto() {}
 
-    public TicketOutputDto(Long id, Date createdAt, Date closedAt, PriorityTicketEnum priority, CategoryOutputDto category, DetailOutputDto detail, FixOutputDto fix, List<Screenshot> screenshots, User createdBy) {
+    public TicketOutputDto(Long id, Date createdAt, User createdBy, Date closedAt, PriorityTicketEnum priority, CategoryOutputDto categoryDto, DetailOutputDto detailDto, FixOutputDto fixDto, List<Screenshot> screenshots) {
         this.id = id;
         this.createdAt = createdAt;
+        this.createdBy = createdBy;
         this.closedAt = closedAt;
         this.priority = priority;
-        this.category = category;
-        this.detail = detail;
-        this.fix = fix;
+        this.categoryDto = categoryDto;
+        this.detailDto = detailDto;
+        this.fixDto = fixDto;
         this.screenshots = screenshots;
-        this.createdBy = createdBy;
     }
 
     public Long getId() {
@@ -50,6 +49,14 @@ public class TicketOutputDto {
         this.createdAt = createdAt;
     }
 
+    public User getCreatedBy() {
+        return createdBy;
+    }
+
+    public void setCreatedBy(User createdBy) {
+        this.createdBy = createdBy;
+    }
+
     public Date getClosedAt() {
         return closedAt;
     }
@@ -66,28 +73,28 @@ public class TicketOutputDto {
         this.priority = priority;
     }
 
-    public CategoryOutputDto getCategory() {
-        return category;
+    public CategoryOutputDto getCategoryDto() {
+        return categoryDto;
     }
 
-    public void setCategory(CategoryOutputDto category) {
-        this.category = category;
+    public void setCategoryDto(CategoryOutputDto categoryDto) {
+        this.categoryDto = categoryDto;
     }
 
-    public DetailOutputDto getDetail() {
-        return detail;
+    public DetailOutputDto getDetailDto() {
+        return detailDto;
     }
 
-    public void setDetail(DetailOutputDto detail) {
-        this.detail = detail;
+    public void setDetailDto(DetailOutputDto detailDto) {
+        this.detailDto = detailDto;
     }
 
-    public FixOutputDto getFix() {
-        return fix;
+    public FixOutputDto getFixDto() {
+        return fixDto;
     }
 
-    public void setFix(FixOutputDto fix) {
-        this.fix = fix;
+    public void setFixDto(FixOutputDto fixDto) {
+        this.fixDto = fixDto;
     }
 
     public List<Screenshot> getScreenshots() {
@@ -96,13 +103,5 @@ public class TicketOutputDto {
 
     public void setScreenshots(List<Screenshot> screenshots) {
         this.screenshots = screenshots;
-    }
-
-    public User getCreatedBy() {
-        return createdBy;
-    }
-
-    public void setCreatedBy(User createdBy) {
-        this.createdBy = createdBy;
     }
 }
