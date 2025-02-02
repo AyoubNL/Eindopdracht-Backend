@@ -1,5 +1,6 @@
 package nl.novi.backend_it_helpdesk.mappers;
 
+import nl.novi.backend_it_helpdesk.dtos.CategoryInputDto;
 import nl.novi.backend_it_helpdesk.dtos.CategoryOutputDto;
 import nl.novi.backend_it_helpdesk.models.Category;
 
@@ -14,11 +15,19 @@ public class CategoryMapper {
         dto.setCategoryName(category.getCategoryName());
         dto.setSubCategoryName(category.getSubCategoryName());
 
-        if(category.getTickets() != null){
-            dto.setTickets(category.getTickets());
-        }
-
         return dto;
+
+    }
+
+    public static Category transferToCategory(CategoryInputDto categoryInputDto) {
+
+        Category category = new Category();
+
+        category.setCategoryName(categoryInputDto.getCategoryName());
+        category.setSubCategoryName(categoryInputDto.getSubCategoryName());
+
+        return category;
+
 
     }
 

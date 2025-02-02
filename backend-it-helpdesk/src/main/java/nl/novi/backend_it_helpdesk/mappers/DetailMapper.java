@@ -1,17 +1,8 @@
 package nl.novi.backend_it_helpdesk.mappers;
 
-
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.OneToMany;
+import nl.novi.backend_it_helpdesk.dtos.DetailInputDto;
 import nl.novi.backend_it_helpdesk.dtos.DetailOutputDto;
-import nl.novi.backend_it_helpdesk.enums.PriorityTicketEnum;
-import nl.novi.backend_it_helpdesk.enums.TypeTicketEnum;
 import nl.novi.backend_it_helpdesk.models.Detail;
-import nl.novi.backend_it_helpdesk.models.Ticket;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class DetailMapper {
 
@@ -24,12 +15,20 @@ public class DetailMapper {
         dto.setPriority(detail.getPriority());
         dto.setType(detail.getType());
 
-        if(detail.getTickets() != null){
-            dto.setTickets(detail.getTickets());
-        }
+        return dto;
 
+    }
 
+    public static Detail transferToDetail(DetailInputDto dto){
 
+        Detail detail = new Detail();
+
+        detail.setDescription(dto.getDescription());
+        detail.setTitle(dto.getTitle());
+        detail.setPriority(dto.getPriority());
+        detail.setType(dto.getType());
+
+        return detail;
 
     }
 

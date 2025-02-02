@@ -3,6 +3,8 @@ package nl.novi.backend_it_helpdesk.models;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import nl.novi.backend_it_helpdesk.enums.*;
+import org.hibernate.annotations.CreationTimestamp;
+import org.springframework.data.annotation.CreatedBy;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -15,6 +17,8 @@ public class Ticket {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @Column(updatable = false)
+    @CreationTimestamp
     private Date createdAt;
     @Enumerated(EnumType.STRING)
     private PriorityTicketEnum priority;
@@ -36,8 +40,8 @@ public class Ticket {
     List<Screenshot> screenshots = new ArrayList<>();
 
     @ManyToOne
+    @CreatedBy
     private User createdBy;
-
 
     public Ticket() {}
 

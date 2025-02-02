@@ -1,5 +1,6 @@
 package nl.novi.backend_it_helpdesk.mappers;
 
+import nl.novi.backend_it_helpdesk.dtos.FixInputDto;
 import nl.novi.backend_it_helpdesk.dtos.FixOutputDto;
 import nl.novi.backend_it_helpdesk.models.Fix;
 
@@ -12,9 +13,23 @@ public class FixMapper {
         dto.setSolution(fix.getSolution());
         dto.setFeedback(fix.getFeedback());
         dto.setStatus(fix.getStatus());
-        dto.setTickets(fix.getTickets());
 
         return dto;
+
+    }
+
+    public static Fix transferToFix(FixInputDto dto){
+
+        Fix fix = new Fix();
+
+        fix.setSolution(dto.getSolution());
+        fix.setFeedback(dto.getFeedback());
+        fix.setStatus(dto.getStatus());
+
+        return fix;
+
+
+
 
     }
 

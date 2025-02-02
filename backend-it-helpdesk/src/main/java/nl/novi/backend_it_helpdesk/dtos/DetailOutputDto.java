@@ -14,17 +14,15 @@ public class DetailOutputDto {
     private String description;
     private PriorityTicketEnum priority;
     private TypeTicketEnum type;
-    List<Ticket> tickets = new ArrayList<>();
 
     public DetailOutputDto() {}
 
-    public DetailOutputDto(Long id, String title, String description, PriorityTicketEnum priority, TypeTicketEnum type, List<Ticket> tickets) {
+    public DetailOutputDto(Long id, String title, String description, PriorityTicketEnum priority, TypeTicketEnum type) {
         this.id = id;
         this.title = title;
         this.description = description;
         this.priority = priority;
         this.type = type;
-        this.tickets = tickets;
     }
 
     public Long getId() {
@@ -65,13 +63,5 @@ public class DetailOutputDto {
 
     public void setType(TypeTicketEnum type) {
         this.type = type;
-    }
-
-    public List<Ticket> getTickets() {
-        return tickets;
-    }
-
-    public void setTickets(List<Ticket> tickets) {
-        this.tickets = tickets;
     }
 }
