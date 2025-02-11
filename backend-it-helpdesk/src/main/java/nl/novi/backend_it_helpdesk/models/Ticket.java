@@ -5,13 +5,15 @@ import jakarta.persistence.*;
 import nl.novi.backend_it_helpdesk.enums.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.springframework.data.annotation.CreatedBy;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 @Entity
 @Table(name = "tickets")
+@EntityListeners(AuditingEntityListener.class)
 public class Ticket {
 
     @Id
@@ -19,7 +21,7 @@ public class Ticket {
     private Long id;
     @Column(updatable = false)
     @CreationTimestamp
-    private Date createdAt;
+    private LocalDateTime createdAt;
     @Enumerated(EnumType.STRING)
     private PriorityTicketEnum priority;
 
@@ -45,7 +47,7 @@ public class Ticket {
 
     public Ticket() {}
 
-    public Ticket(Long id, Date createdAt, PriorityTicketEnum priority, Category category, Detail detail, Fix fix, List<Screenshot> screenshots, User createdBy) {
+    public Ticket(Long id, LocalDateTime createdAt, PriorityTicketEnum priority, Category category, Detail detail, Fix fix, List<Screenshot> screenshots, User createdBy) {
         this.id = id;
         this.createdAt = createdAt;
         this.priority = priority;
@@ -56,11 +58,11 @@ public class Ticket {
         this.createdBy = createdBy;
     }
 
-    public Date getCreatedAt() {
+    public LocalDateTime getCreatedAt() {
         return createdAt;
     }
 
-    public void setCreatedAt(Date createdAt) {
+    public void setCreatedAt(LocalDateTime createdAt) {
         this.createdAt = createdAt;
     }
 

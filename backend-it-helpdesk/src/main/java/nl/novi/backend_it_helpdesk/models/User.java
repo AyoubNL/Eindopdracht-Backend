@@ -29,7 +29,7 @@ public class User {
             fetch = FetchType.EAGER)
     private Set<Authority> authorities = new HashSet<Authority>();
 
-    @OneToMany(mappedBy = "User")
+    @OneToMany(mappedBy = "createdBy")
     List<Ticket> tickets = new ArrayList<>();
 
 

@@ -3,6 +3,7 @@ package nl.novi.backend_it_helpdesk.dtos;
 import nl.novi.backend_it_helpdesk.enums.PriorityTicketEnum;
 import nl.novi.backend_it_helpdesk.models.*;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -10,7 +11,7 @@ import java.util.List;
 public class TicketOutputDto {
 
     private Long id;
-    private Date createdAt;
+    private LocalDateTime createdAt;
     private User createdBy;
     private Date closedAt;
     private PriorityTicketEnum priority;
@@ -21,7 +22,7 @@ public class TicketOutputDto {
 
     public TicketOutputDto() {}
 
-    public TicketOutputDto(Long id, Date createdAt, User createdBy, Date closedAt, PriorityTicketEnum priority, CategoryOutputDto categoryDto, DetailOutputDto detailDto, FixOutputDto fixDto, List<Screenshot> screenshots) {
+    public TicketOutputDto(Long id, LocalDateTime createdAt, User createdBy, Date closedAt, PriorityTicketEnum priority, CategoryOutputDto categoryDto, DetailOutputDto detailDto, FixOutputDto fixDto, List<Screenshot> screenshots) {
         this.id = id;
         this.createdAt = createdAt;
         this.createdBy = createdBy;
@@ -41,11 +42,11 @@ public class TicketOutputDto {
         this.id = id;
     }
 
-    public Date getCreatedAt() {
+    public LocalDateTime getCreatedAt() {
         return createdAt;
     }
 
-    public void setCreatedAt(Date createdAt) {
+    public void setCreatedAt(LocalDateTime createdAt) {
         this.createdAt = createdAt;
     }
 
