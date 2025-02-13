@@ -3,6 +3,7 @@ package nl.novi.backend_it_helpdesk.enums;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
 
+
 public enum PriorityTicketEnum {
     P1_ORGANIZATION("p1_organisation"),
     P2_DEPARTEMENT("p2_departement"),

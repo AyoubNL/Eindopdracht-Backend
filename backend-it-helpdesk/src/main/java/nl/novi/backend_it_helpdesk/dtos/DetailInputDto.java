@@ -12,20 +12,18 @@ import java.util.List;
 public class DetailInputDto {
 
     @NotNull(message = "Title is required")
-    @Size(min=1, max=50, message = "Category too long (max 50 characters)")
+    @Size(min=1, max=50, message = "Title too long (max 50 characters)")
     private String title;
     @NotNull(message = "Description is required")
-    @Size(min=1, max=400, message = "Category too long (max 400 characters)")
+    @Size(min=1, max=400, message = "Description too long (max 400 characters)")
     private String description;
-    private PriorityTicketEnum priority;
     private TypeTicketEnum type;
 
     public DetailInputDto() {}
 
-    public DetailInputDto(String title, String description, PriorityTicketEnum priority, TypeTicketEnum type) {
+    public DetailInputDto(String title, String description, TypeTicketEnum type) {
         this.title = title;
         this.description = description;
-        this.priority = priority;
         this.type = type;
     }
 
@@ -43,14 +41,6 @@ public class DetailInputDto {
 
     public void setDescription(@NotNull(message = "Description is required") @Size(min = 1, max = 400, message = "Category too long (max 400 characters)") String description) {
         this.description = description;
-    }
-
-    public PriorityTicketEnum getPriority() {
-        return priority;
-    }
-
-    public void setPriority(PriorityTicketEnum priority) {
-        this.priority = priority;
     }
 
     public TypeTicketEnum getType() {

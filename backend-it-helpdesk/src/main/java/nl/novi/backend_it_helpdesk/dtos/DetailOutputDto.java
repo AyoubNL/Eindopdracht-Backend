@@ -12,16 +12,14 @@ public class DetailOutputDto {
     private Long id;
     private String title;
     private String description;
-    private PriorityTicketEnum priority;
     private TypeTicketEnum type;
 
     public DetailOutputDto() {}
 
-    public DetailOutputDto(Long id, String title, String description, PriorityTicketEnum priority, TypeTicketEnum type) {
+    public DetailOutputDto(Long id, String title, String description, TypeTicketEnum type) {
         this.id = id;
         this.title = title;
         this.description = description;
-        this.priority = priority;
         this.type = type;
     }
 
@@ -47,14 +45,6 @@ public class DetailOutputDto {
 
     public void setDescription(String description) {
         this.description = description;
-    }
-
-    public PriorityTicketEnum getPriority() {
-        return priority;
-    }
-
-    public void setPriority(PriorityTicketEnum priority) {
-        this.priority = priority;
     }
 
     public TypeTicketEnum getType() {

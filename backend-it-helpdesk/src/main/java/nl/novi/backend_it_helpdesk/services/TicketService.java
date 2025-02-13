@@ -29,15 +29,15 @@ public class TicketService {
             TicketOutputDto dto = transferToDto(tk);
 
             if (tk.getCategory() != null) {
-                dto.setCategoryDto(CategoryMapper.transferToDto(tk.getCategory()));
+                dto.setCategory(CategoryMapper.transferToDto(tk.getCategory()));
             }
 
             if (tk.getDetail() != null) {
-                dto.setDetailDto(DetailMapper.transferToDto(tk.getDetail()));
+                dto.setDetail(DetailMapper.transferToDto(tk.getDetail()));
             }
 
             if (tk.getFix() != null) {
-                dto.setFixDto(FixMapper.transferToDto(tk.getFix()));
+                dto.setFix(FixMapper.transferToDto(tk.getFix()));
             }
 
             return transferToDto(tk);

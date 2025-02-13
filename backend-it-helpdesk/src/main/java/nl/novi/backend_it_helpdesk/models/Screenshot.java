@@ -3,6 +3,7 @@ package nl.novi.backend_it_helpdesk.models;
 import jakarta.persistence.*;
 
 @Entity
+@Table(name = "screenshots")
 public class Screenshot {
 
     @Id

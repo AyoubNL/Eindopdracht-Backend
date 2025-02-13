@@ -12,21 +12,24 @@ public class TicketMapper {
 
         dto.setId(ticket.getId());
         dto.setCreatedAt(ticket.getCreatedAt());
-        dto.setCreatedBy(ticket.getCreatedBy());
         dto.setPriority(ticket.getPriority());
         dto.setScreenshots(ticket.getScreenshots());
 
+        if(ticket.getCreatedBy() != null) {
+            dto.setCreatedBy(UserMapper.transferToDto(ticket.getCreatedBy()));
+        }
+
 
         if(ticket.getCategory() != null) {
-            dto.setCategoryDto(CategoryMapper.transferToDto(ticket.getCategory()));
+            dto.setCategory(CategoryMapper.transferToDto(ticket.getCategory()));
         }
 
         if(ticket.getDetail() != null) {
-            dto.setDetailDto(DetailMapper.transferToDto(ticket.getDetail()));
+            dto.setDetail(DetailMapper.transferToDto(ticket.getDetail()));
         }
 
         if(ticket.getFix() != null) {
-            dto.setFixDto(FixMapper.transferToDto(ticket.getFix()));
+            dto.setFix(FixMapper.transferToDto(ticket.getFix()));
         }
 
         return dto;
@@ -37,6 +40,10 @@ public class TicketMapper {
 
         ticket.setPriority(dto.getPriority());
         ticket.setScreenshots(dto.getScreenshots());
+
+        if(dto.getCreatedBy() != null) {
+            ticket.setCreatedBy(UserMapper.transferToUser(dto.getCreatedBy()));
+        }
 
         if(dto.getCategory() != null) {
 
@@ -51,6 +58,7 @@ public class TicketMapper {
         }
 
         if(dto.getFix() != null){
+
             ticket.setFix(FixMapper.transferToFix(dto.getFix()));
         }
 

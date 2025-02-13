@@ -1,9 +1,5 @@
 package nl.novi.backend_it_helpdesk.dtos;
 
-import nl.novi.backend_it_helpdesk.models.Ticket;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class CategoryOutputDto {
 

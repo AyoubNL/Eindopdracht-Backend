@@ -29,8 +29,6 @@ public class FixMapper {
         return fix;
 
 
-
-
     }
 
 

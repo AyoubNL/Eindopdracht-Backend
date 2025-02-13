@@ -11,26 +11,27 @@ import java.util.List;
 public class TicketOutputDto {
 
     private Long id;
+    private UserOutputDto createdBy;
     private LocalDateTime createdAt;
-    private User createdBy;
-    private Date closedAt;
     private PriorityTicketEnum priority;
-    private CategoryOutputDto categoryDto;
-    private DetailOutputDto detailDto;
-    private FixOutputDto fixDto;
+    private CategoryOutputDto category;
+    private DetailOutputDto detail;
+    private FixOutputDto fix;
     List<Screenshot> screenshots = new ArrayList<>();
+    private Date closedAt;
+
 
     public TicketOutputDto() {}
 
-    public TicketOutputDto(Long id, LocalDateTime createdAt, User createdBy, Date closedAt, PriorityTicketEnum priority, CategoryOutputDto categoryDto, DetailOutputDto detailDto, FixOutputDto fixDto, List<Screenshot> screenshots) {
+    public TicketOutputDto(Long id, LocalDateTime createdAt, UserOutputDto createdBy, Date closedAt, PriorityTicketEnum priority, CategoryOutputDto category, DetailOutputDto detail, FixOutputDto fix, List<Screenshot> screenshots) {
         this.id = id;
         this.createdAt = createdAt;
         this.createdBy = createdBy;
         this.closedAt = closedAt;
         this.priority = priority;
-        this.categoryDto = categoryDto;
-        this.detailDto = detailDto;
-        this.fixDto = fixDto;
+        this.category = category;
+        this.detail = detail;
+        this.fix = fix;
         this.screenshots = screenshots;
     }
 
@@ -50,11 +51,12 @@ public class TicketOutputDto {
         this.createdAt = createdAt;
     }
 
-    public User getCreatedBy() {
+
+    public UserOutputDto getCreatedBy() {
         return createdBy;
     }
 
-    public void setCreatedBy(User createdBy) {
+    public void setCreatedBy(UserOutputDto createdBy) {
         this.createdBy = createdBy;
     }
 
@@ -74,28 +76,28 @@ public class TicketOutputDto {
         this.priority = priority;
     }
 
-    public CategoryOutputDto getCategoryDto() {
-        return categoryDto;
+    public CategoryOutputDto getCategory() {
+        return category;
     }
 
-    public void setCategoryDto(CategoryOutputDto categoryDto) {
-        this.categoryDto = categoryDto;
+    public void setCategory(CategoryOutputDto category) {
+        this.category = category;
     }
 
-    public DetailOutputDto getDetailDto() {
-        return detailDto;
+    public DetailOutputDto getDetail() {
+        return detail;
     }
 
-    public void setDetailDto(DetailOutputDto detailDto) {
-        this.detailDto = detailDto;
+    public void setDetail(DetailOutputDto detail) {
+        this.detail = detail;
     }
 
-    public FixOutputDto getFixDto() {
-        return fixDto;
+    public FixOutputDto getFix() {
+        return fix;
     }
 
-    public void setFixDto(FixOutputDto fixDto) {
-        this.fixDto = fixDto;
+    public void setFix(FixOutputDto fix) {
+        this.fix = fix;
     }
 
     public List<Screenshot> getScreenshots() {

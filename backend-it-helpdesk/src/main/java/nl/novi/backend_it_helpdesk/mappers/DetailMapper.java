@@ -12,7 +12,6 @@ public class DetailMapper {
         dto.setId(detail.getId());
         dto.setTitle(detail.getTitle());
         dto.setDescription(detail.getDescription());
-        dto.setPriority(detail.getPriority());
         dto.setType(detail.getType());
 
         return dto;
@@ -25,7 +24,6 @@ public class DetailMapper {
 
         detail.setDescription(dto.getDescription());
         detail.setTitle(dto.getTitle());
-        detail.setPriority(dto.getPriority());
         detail.setType(dto.getType());
 
         return detail;
