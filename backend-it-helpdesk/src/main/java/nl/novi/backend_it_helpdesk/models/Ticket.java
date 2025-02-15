@@ -41,8 +41,9 @@ public class Ticket {
     @JsonIgnoreProperties(value = {"contents","contentType"} )
     List<Screenshot> screenshots = new ArrayList<>();
 
-    @ManyToOne
     @CreatedBy
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "createdBy_id")
     private User createdBy;
 
     public Ticket() {}

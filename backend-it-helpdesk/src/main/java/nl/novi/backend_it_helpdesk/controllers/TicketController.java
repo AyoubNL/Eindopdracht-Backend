@@ -34,9 +34,10 @@ public class TicketController {
         try{
         TicketOutputDto dto = ticketService.addTicket(ticket);
 
-        URI uri = URI.create(ServletUriComponentsBuilder
+        URI uri = ServletUriComponentsBuilder
                 .fromCurrentRequest()
-                .path("/" + dto.getId()).toString());
+                .path("/" + dto.getId())
+                .buildAndExpand(dto.getId()).toUri();
 
         return ResponseEntity.created(uri).body(dto);
         }

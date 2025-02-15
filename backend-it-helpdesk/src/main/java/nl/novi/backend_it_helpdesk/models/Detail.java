@@ -17,8 +17,6 @@ public class Detail {
     private String title;
     private String description;
     @Enumerated(EnumType.STRING)
-    private PriorityTicketEnum priority;
-    @Enumerated(EnumType.STRING)
     private TypeTicketEnum type;
 
     @OneToMany(mappedBy = "detail")
@@ -26,11 +24,10 @@ public class Detail {
 
     public Detail() {}
 
-    public Detail(Long id, String title, String description, PriorityTicketEnum priority, TypeTicketEnum type, List<Ticket> tickets) {
+    public Detail(Long id, String title, String description, TypeTicketEnum type, List<Ticket> tickets) {
         this.id = id;
         this.title = title;
         this.description = description;
-        this.priority = priority;
         this.type = type;
         this.tickets = tickets;
     }
@@ -57,14 +54,6 @@ public class Detail {
 
     public void setDescription(String description) {
         this.description = description;
-    }
-
-    public PriorityTicketEnum getPriority() {
-        return priority;
-    }
-
-    public void setPriority(PriorityTicketEnum priority) {
-        this.priority = priority;
     }
 
     public TypeTicketEnum getType() {

@@ -16,7 +16,6 @@ public class Screenshot {
     @Lob
     private byte[] contents;
 
-    @ManyToOne()
-    @JoinColumn(name = "ticket_id")
+    @ManyToOne(cascade = CascadeType.ALL)
     private Ticket ticket;
 }

@@ -1,13 +1,13 @@
 package nl.novi.backend_it_helpdesk.models;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
+
+import java.io.Serializable;
 
 @Entity
 @Table(name = "authorities")
-public class Authority {
+@IdClass(AuthorityKey.class)
+public class Authority implements Serializable {
 
     @Id
     @Column(nullable = false)
