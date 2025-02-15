@@ -3,6 +3,7 @@ package nl.novi.backend_it_helpdesk.models;
 import jakarta.persistence.*;
 
 @Entity
+@Table(name = "screenshots")
 public class Screenshot {
 
     @Id
@@ -15,7 +16,6 @@ public class Screenshot {
     @Lob
     private byte[] contents;
 
-    @ManyToOne()
-    @JoinColumn(name = "ticket_id")
+    @ManyToOne(cascade = CascadeType.ALL)
     private Ticket ticket;
 }
