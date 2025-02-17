@@ -4,6 +4,9 @@ import nl.novi.backend_it_helpdesk.dtos.CategoryInputDto;
 import nl.novi.backend_it_helpdesk.dtos.CategoryOutputDto;
 import nl.novi.backend_it_helpdesk.models.Category;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class CategoryMapper {
 
 
@@ -27,6 +30,23 @@ public class CategoryMapper {
         category.setSubCategoryName(categoryInputDto.getSubCategoryName());
 
         return category;
+
+
+    }
+
+    public static List<CategoryOutputDto> transferCategoryListToDtoList(List<Category> categories) {
+
+        List<CategoryOutputDto> categoryDtoList = new ArrayList<>();
+
+        for(Category category : categories) {
+            CategoryOutputDto outputDto = transferToDto(category);
+
+            outputDto.setId(category.getId());
+            outputDto.setCategoryName(category.getCategoryName());
+            outputDto.setSubCategoryName(category.getSubCategoryName());
+            categoryDtoList.add(outputDto);
+        }
+        return categoryDtoList;
 
 
     }

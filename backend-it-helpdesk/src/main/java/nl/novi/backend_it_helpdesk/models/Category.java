@@ -11,7 +11,7 @@ public class Category {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private Long id;
     private String categoryName;
     private String subCategoryName;
 
@@ -20,18 +20,18 @@ public class Category {
 
     public Category() {}
 
-    public Category(int id, String categoryName, String subCategoryName, List<Ticket> tickets) {
+    public Category(Long id, String categoryName, String subCategoryName, List<Ticket> tickets) {
         this.id = id;
         this.categoryName = categoryName;
         this.subCategoryName = subCategoryName;
         this.tickets = tickets;
     }
 
-    public int getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Long id) {
         this.id = id;
     }
 

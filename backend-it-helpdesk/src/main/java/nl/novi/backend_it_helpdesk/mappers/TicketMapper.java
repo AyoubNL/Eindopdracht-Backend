@@ -4,6 +4,9 @@ import nl.novi.backend_it_helpdesk.dtos.TicketInputDto;
 import nl.novi.backend_it_helpdesk.dtos.TicketOutputDto;
 import nl.novi.backend_it_helpdesk.models.Ticket;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class TicketMapper {
 
     public static TicketOutputDto transferToDto(Ticket ticket) {
@@ -63,6 +66,33 @@ public class TicketMapper {
         }
 
         return ticket;
+
+    }
+
+    public static List<TicketOutputDto> transferTicketListToDtoList(List<Ticket> tickets) {
+
+        List<TicketOutputDto> ticketDtoList = new ArrayList<>();
+
+        for(Ticket ticket : tickets) {
+            TicketOutputDto dto = transferToDto(ticket);
+            if(ticket.getCreatedBy() != null) {
+                dto.setCreatedBy(UserMapper.transferToDto(ticket.getCreatedBy()));
+            }
+            if(ticket.getCategory() != null) {
+                dto.setCategory(CategoryMapper.transferToDto(ticket.getCategory()));
+            }
+            if(ticket.getDetail() != null) {
+                dto.setDetail(DetailMapper.transferToDto(ticket.getDetail()));
+            }
+            if(ticket.getFix() != null) {
+                dto.setFix(FixMapper.transferToDto(ticket.getFix()));
+            }
+            ticketDtoList.add(dto);
+
+
+        }
+
+        return ticketDtoList;
 
     }
 
