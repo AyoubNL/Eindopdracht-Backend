@@ -83,7 +83,44 @@ public class TicketService {
             Ticket tk = ticketRepository.findById(id).get();
 
             Ticket tk1 = transferToTicket(updateTicket);
+
+            if (updateTicket.getCategory().getCategoryName() == null) {
+                tk1.getCategory().setCategoryName(tk.getCategory().getCategoryName());
+            }
+            else{
+                tk1.getCategory().setCategoryName(updateTicket.getCategory().getCategoryName());
+            }
+
+            if (updateTicket.getCategory().getSubCategoryName() == null) {
+                tk1.getCategory().setSubCategoryName(tk.getCategory().getSubCategoryName());
+            }
+            else{
+                tk1.getCategory().setSubCategoryName(updateTicket.getCategory().getSubCategoryName());
+            }
+
+
+//                tk1.getDetail().setTitle(tk.getDetail().getTitle());
+//                tk1.getDetail().setDescription(tk.getDetail().getDescription());
+//                tk1.getDetail().setType(tk.getDetail().getType());
+//
+
+            if(updateTicket.getFix() == null){
+                tk1.setFix(tk.getFix());
+            }
+            if(updateTicket.getCreatedBy() == null){
+                tk1.setCreatedBy(tk.getCreatedBy());
+            }
+            if(updateTicket.getPriority() == null){
+                tk1.setPriority(tk.getPriority());
+            }
+            if(updateTicket.getScreenshots() == null){
+                tk1.setScreenshots(tk.getScreenshots());
+            }
             tk1.setId(tk.getId());
+            tk1.getCategory().setId(tk.getCategory().getId());
+//            tk1.getDetail().setId(tk.getDetail().getId());
+//            tk1.getFix().setId(tk.getFix().getId());
+//            tk1.getCreatedBy().setUsername(tk.getCreatedBy().getUsername());
 
             ticketRepository.save(tk1);
 
@@ -91,7 +128,7 @@ public class TicketService {
 
         }
         else {
-            throw new RecordNotFoundException("Het ticketnummer:" + id + " is onbekend");
+            throw new RecordNotFoundException("Het ticketnummer: " + id + " is onbekend");
         }
 
     }
