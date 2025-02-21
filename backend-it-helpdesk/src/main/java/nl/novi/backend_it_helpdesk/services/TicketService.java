@@ -78,56 +78,50 @@ public class TicketService {
 
     public TicketOutputDto updateTicket(Long id, @Valid TicketInputDto updateTicket) {
 
-        if(ticketRepository.findById(id).isPresent()) {
+        if (ticketRepository.findById(id).isPresent()) {
 
             Ticket tk = ticketRepository.findById(id).get();
 
             Ticket tk1 = transferToTicket(updateTicket);
 
-            if (updateTicket.getCategory().getCategoryName() == null) {
-                tk1.getCategory().setCategoryName(tk.getCategory().getCategoryName());
-            }
-            else{
-                tk1.getCategory().setCategoryName(updateTicket.getCategory().getCategoryName());
-            }
-
-            if (updateTicket.getCategory().getSubCategoryName() == null) {
-                tk1.getCategory().setSubCategoryName(tk.getCategory().getSubCategoryName());
-            }
-            else{
-                tk1.getCategory().setSubCategoryName(updateTicket.getCategory().getSubCategoryName());
-            }
-
-
-//                tk1.getDetail().setTitle(tk.getDetail().getTitle());
-//                tk1.getDetail().setDescription(tk.getDetail().getDescription());
-//                tk1.getDetail().setType(tk.getDetail().getType());
-//
-
-            if(updateTicket.getFix() == null){
-                tk1.setFix(tk.getFix());
-            }
-            if(updateTicket.getCreatedBy() == null){
-                tk1.setCreatedBy(tk.getCreatedBy());
-            }
-            if(updateTicket.getPriority() == null){
-                tk1.setPriority(tk.getPriority());
-            }
-            if(updateTicket.getScreenshots() == null){
-                tk1.setScreenshots(tk.getScreenshots());
-            }
             tk1.setId(tk.getId());
-            tk1.getCategory().setId(tk.getCategory().getId());
-//            tk1.getDetail().setId(tk.getDetail().getId());
-//            tk1.getFix().setId(tk.getFix().getId());
-//            tk1.getCreatedBy().setUsername(tk.getCreatedBy().getUsername());
+
+                if (tk1.getCategory().getCategoryName() == null) {
+                    tk1.getCategory().setCategoryName(tk.getCategory().getCategoryName());
+                }
+                if (tk1.getCategory().getSubCategoryName() == null) {
+                    tk1.getCategory().setSubCategoryName(tk.getCategory().getSubCategoryName());
+                }
+
+
+                if (tk1.getDetail().getTitle() == null) {tk1.getDetail().setTitle(tk.getDetail().getTitle());
+                }
+                if (tk1.getDetail().getType() == null) {tk1.getDetail().setType(tk.getDetail().getType());
+                }
+                if (tk1.getDetail().getDescription() == null) {tk.getDetail().setDescription(tk.getDetail().getDescription());
+                }
+
+
+
+                if(tk1.getFix().getSolution() == null) {tk1.getFix().setSolution(tk.getFix().getSolution());}
+                if(tk1.getFix().getFeedback() == null) {tk1.getFix().setFeedback(tk.getFix().getFeedback());}
+                if(tk1.getFix().getStatus() == null) {tk1.getFix().setStatus(tk.getFix().getStatus());}
+
+
+                if(tk1.getCreatedBy().getEmail() == null) {tk1.getCreatedBy().setEmail(tk.getCreatedBy().getEmail());}
+                if(tk1.getCreatedBy().getPassword() == null) {tk1.getCreatedBy().setPassword(tk.getCreatedBy().getPassword());}
+                if(tk1.getCreatedBy().getRole() == null) {tk1.getCreatedBy().setRole(tk.getCreatedBy().getRole());}
+
+
+
+            if(tk1.getPriority() == null) {tk1.setPriority(tk.getPriority());}
+
 
             ticketRepository.save(tk1);
 
             return transferToDto(tk1);
 
-        }
-        else {
+        } else {
             throw new RecordNotFoundException("Het ticketnummer: " + id + " is onbekend");
         }
 
