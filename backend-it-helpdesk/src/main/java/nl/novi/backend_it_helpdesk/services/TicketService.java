@@ -85,6 +85,10 @@ public class TicketService {
             Ticket tk1 = transferToTicket(updateTicket);
 
             tk1.setId(tk.getId());
+            tk1.setCreatedAt(tk.getCreatedAt());
+
+            if (tk1.getCategory() != null) {
+                tk1.getCategory().setId(tk.getCategory().getId());
 
                 if (tk1.getCategory().getCategoryName() == null) {
                     tk1.getCategory().setCategoryName(tk.getCategory().getCategoryName());
@@ -92,30 +96,65 @@ public class TicketService {
                 if (tk1.getCategory().getSubCategoryName() == null) {
                     tk1.getCategory().setSubCategoryName(tk.getCategory().getSubCategoryName());
                 }
+            } else {
+                tk1.setCategory(tk.getCategory());
+            }
 
+            if (tk1.getDetail() != null) {
+                tk1.getDetail().setId(tk.getDetail().getId());
 
-                if (tk1.getDetail().getTitle() == null) {tk1.getDetail().setTitle(tk.getDetail().getTitle());
+                if (tk1.getDetail().getTitle() == null) {
+                    tk1.getDetail().setTitle(tk.getDetail().getTitle());
                 }
-                if (tk1.getDetail().getType() == null) {tk1.getDetail().setType(tk.getDetail().getType());
+                if (tk1.getDetail().getType() == null) {
+                    tk1.getDetail().setType(tk.getDetail().getType());
                 }
-                if (tk1.getDetail().getDescription() == null) {tk.getDetail().setDescription(tk.getDetail().getDescription());
+                if (tk1.getDetail().getDescription() == null) {
+                    tk1.getDetail().setDescription(tk.getDetail().getDescription());
                 }
+            } else {
+                tk1.setDetail(tk.getDetail());
+            }
 
 
+            if (tk1.getFix() != null) {
+                tk1.getFix().setId(tk.getFix().getId());
 
-                if(tk1.getFix().getSolution() == null) {tk1.getFix().setSolution(tk.getFix().getSolution());}
-                if(tk1.getFix().getFeedback() == null) {tk1.getFix().setFeedback(tk.getFix().getFeedback());}
-                if(tk1.getFix().getStatus() == null) {tk1.getFix().setStatus(tk.getFix().getStatus());}
+                if (tk1.getFix().getSolution() == null) {
+                    tk1.getFix().setSolution(tk.getFix().getSolution());
+                }
+                if (tk1.getFix().getFeedback() == null) {
+                    tk1.getFix().setFeedback(tk.getFix().getFeedback());
+                }
+                if (tk1.getFix().getStatus() == null) {
+                    tk1.getFix().setStatus(tk.getFix().getStatus());
+                } else {
+                    tk1.setFix(tk.getFix());
+                }
+            }
 
 
-                if(tk1.getCreatedBy().getEmail() == null) {tk1.getCreatedBy().setEmail(tk.getCreatedBy().getEmail());}
-                if(tk1.getCreatedBy().getPassword() == null) {tk1.getCreatedBy().setPassword(tk.getCreatedBy().getPassword());}
-                if(tk1.getCreatedBy().getRole() == null) {tk1.getCreatedBy().setRole(tk.getCreatedBy().getRole());}
+            if (tk1.getCreatedBy() != null) {
+                tk1.getCreatedBy().setUsername(tk1.getCreatedBy().getUsername());
 
+                if (tk1.getCreatedBy().getEmail() == null) {
+                    tk1.getCreatedBy().setEmail(tk.getCreatedBy().getEmail());
+                }
+                if (tk1.getCreatedBy().getPassword() == null) {
+                    tk1.getCreatedBy().setPassword(tk.getCreatedBy().getPassword());
+                }
+                if (tk1.getCreatedBy().getRole() == null) {
+                    tk1.getCreatedBy().setRole(tk.getCreatedBy().getRole());
+                } else {
+                    tk1.setCreatedBy(tk1.getCreatedBy());
+                }
+            } else {
+                tk1.setCreatedBy(tk.getCreatedBy());
+            }
 
-
-            if(tk1.getPriority() == null) {tk1.setPriority(tk.getPriority());}
-
+            if (tk1.getPriority() == null) {
+                tk1.setPriority(tk.getPriority());
+            }
 
             ticketRepository.save(tk1);
 
@@ -127,3 +166,4 @@ public class TicketService {
 
     }
 }
+
