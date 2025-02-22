@@ -63,10 +63,10 @@ public class CategoryService {
 
         if(categoryRepository.findById(id).isPresent()){
 
-            Category category = categoryRepository.findById(id).get();
+            Category cg = categoryRepository.findById(id).get();
 
             Category cg1 = transferToCategory(updateCategory);
-            cg1.setId(category.getId());
+            cg1.setId(cg.getId());
 
             categoryRepository.save(cg1);
 
