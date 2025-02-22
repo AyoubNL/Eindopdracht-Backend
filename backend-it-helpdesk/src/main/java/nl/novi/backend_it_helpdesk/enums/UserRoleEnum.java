@@ -3,7 +3,7 @@ package nl.novi.backend_it_helpdesk.enums;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
 
-public enum     UserRoleEnum {
+public enum UserRoleEnum {
     CLIENT("client"),
     AGENT("agent"),
     MANAGER("manager");
@@ -31,10 +31,6 @@ public enum     UserRoleEnum {
         throw new IllegalArgumentException("Invalid user: " + value);
 
     }
-
-
-
-
 
 
 }

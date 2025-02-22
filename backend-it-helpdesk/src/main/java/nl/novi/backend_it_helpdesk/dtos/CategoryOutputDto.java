@@ -3,23 +3,23 @@ package nl.novi.backend_it_helpdesk.dtos;
 
 public class CategoryOutputDto {
 
-    private int id;
+    private Long id;
     private String categoryName;
     private String subCategoryName;
 
     public CategoryOutputDto() {}
 
-    public CategoryOutputDto(int id, String categoryName, String subCategoryName) {
+    public CategoryOutputDto(Long id, String categoryName, String subCategoryName) {
         this.id = id;
         this.categoryName = categoryName;
         this.subCategoryName = subCategoryName;
     }
 
-    public int getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Long id) {
         this.id = id;
     }
 

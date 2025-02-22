@@ -1,6 +1,7 @@
 package nl.novi.backend_it_helpdesk.models;
 
 import jakarta.persistence.*;
+import lombok.NoArgsConstructor;
 import nl.novi.backend_it_helpdesk.enums.PriorityTicketEnum;
 import nl.novi.backend_it_helpdesk.enums.TypeTicketEnum;
 

@@ -2,6 +2,7 @@ package nl.novi.backend_it_helpdesk.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
+import lombok.NoArgsConstructor;
 import nl.novi.backend_it_helpdesk.enums.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.springframework.data.annotation.CreatedBy;
