@@ -1,5 +1,7 @@
 package nl.novi.backend_it_helpdesk.dtos;
 
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import nl.novi.backend_it_helpdesk.enums.StatusTicketEnum;

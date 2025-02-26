@@ -87,7 +87,7 @@ public class TicketService {
             tk1.setId(tk.getId());
             tk1.setCreatedAt(tk.getCreatedAt());
 
-            if (tk1.getCategory() != null) {
+           if (tk1.getCategory() != null) {
                 tk1.getCategory().setId(tk.getCategory().getId());
 
                 if (tk1.getCategory().getCategoryName() == null) {
@@ -100,7 +100,7 @@ public class TicketService {
                 tk1.setCategory(tk.getCategory());
             }
 
-            if (tk1.getDetail() != null) {
+          if (tk1.getDetail() != null) {
                 tk1.getDetail().setId(tk.getDetail().getId());
 
                 if (tk1.getDetail().getTitle() == null) {
@@ -116,7 +116,6 @@ public class TicketService {
                 tk1.setDetail(tk.getDetail());
             }
 
-
             if (tk1.getFix() != null) {
                 tk1.getFix().setId(tk.getFix().getId());
 
@@ -126,12 +125,12 @@ public class TicketService {
                 if (tk1.getFix().getFeedback() == null) {
                     tk1.getFix().setFeedback(tk.getFix().getFeedback());
                 }
-                if (tk1.getFix().getStatus() == null) {
-                    tk1.getFix().setStatus(tk.getFix().getStatus());
-                } else {
-                    tk1.setFix(tk.getFix());
-                }
+                if (tk1.getFix().getStatus() == null) {tk1.getFix().setStatus(tk.getFix().getStatus());}
+                else {tk1.setFix(tk.getFix());}
             }
+            System.out.println(updateTicket.getFix().getStatus());
+            System.out.println(tk.getFix().getStatus());
+            System.out.println(tk1.getFix().getStatus());
 
 
             if (tk1.getCreatedBy() != null) {
