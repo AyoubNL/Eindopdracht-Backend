@@ -6,7 +6,6 @@ import nl.novi.backend_it_helpdesk.dtos.TicketOutputDto;
 import nl.novi.backend_it_helpdesk.models.User;
 import nl.novi.backend_it_helpdesk.services.TicketService;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 

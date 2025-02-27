@@ -21,7 +21,7 @@ public enum StatusTicketEnum {
         return statusTicketEnum;
     }
 
-    @JsonCreator
+    @JsonCreator(mode = JsonCreator.Mode.DELEGATING)
     public static StatusTicketEnum fromStatus(String value) {
         for(StatusTicketEnum status : values()){
             String currentStatus = status.getStatus();

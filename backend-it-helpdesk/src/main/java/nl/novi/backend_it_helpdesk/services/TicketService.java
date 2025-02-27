@@ -125,9 +125,11 @@ public class TicketService {
                 if (tk1.getFix().getFeedback() == null) {
                     tk1.getFix().setFeedback(tk.getFix().getFeedback());
                 }
-                if (tk1.getFix().getStatus() == null) {tk1.getFix().setStatus(tk.getFix().getStatus());}
-                else {tk1.setFix(tk.getFix());}
+                if (tk1.getFix().getStatus() == null) {
+                    tk1.getFix().setStatus(tk.getFix().getStatus());}
             }
+            else {tk1.setFix(tk.getFix());}
+
             System.out.println(updateTicket.getFix().getStatus());
             System.out.println(tk.getFix().getStatus());
             System.out.println(tk1.getFix().getStatus());
