@@ -30,7 +30,7 @@ public class UserInputDto {
     }
 
     public void setUsername(@Size(min = 1, max = 8, message = "Username too long (max 8 characters)") String username) {
-        this.username = username;
+        this.username = username.toLowerCase();
     }
 
     public @Size(min = 1, max = 8, message = "Password too long (max 8 characters)") String getPassword() {

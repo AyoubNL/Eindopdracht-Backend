@@ -57,5 +57,24 @@ public class FixController {
 
     }
 
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Object> deleteFix(@PathVariable Long id) {
+
+        fixService.deleteDetail(id);
+
+        return ResponseEntity.noContent().build();
+
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<FixOutputDto> updateDetail(@PathVariable Long id, @Valid @RequestBody FixInputDto updateFix) {
+
+        FixOutputDto outputDto = fixService.updateFix(id, updateFix);
+
+        return ResponseEntity.ok().body(outputDto);
+
+    }
+
+
 
 }

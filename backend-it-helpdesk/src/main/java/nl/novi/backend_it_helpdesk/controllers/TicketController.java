@@ -44,7 +44,7 @@ public class TicketController {
         }
 
         else{
-            dtos = ticketService.getAllTicketsByCreatedBy(user.get());
+            dtos = ticketService.getAllTicketsByUser(user.get());
         }
 
         return ResponseEntity.ok().body(dtos);

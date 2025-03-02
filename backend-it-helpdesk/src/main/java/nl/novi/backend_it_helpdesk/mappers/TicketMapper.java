@@ -18,8 +18,8 @@ public class TicketMapper {
         dto.setPriority(ticket.getPriority());
         dto.setScreenshots(ticket.getScreenshots());
 
-        if(ticket.getCreatedBy() != null) {
-            dto.setCreatedBy(UserMapper.transferToDto(ticket.getCreatedBy()));
+        if(ticket.getUser() != null) {
+            dto.setUser(UserMapper.transferToDto(ticket.getUser()));
         }
 
 
@@ -44,8 +44,8 @@ public class TicketMapper {
         ticket.setPriority(dto.getPriority());
         ticket.setScreenshots(dto.getScreenshots());
 
-        if(dto.getCreatedBy() != null) {
-            ticket.setCreatedBy(UserMapper.transferToUser(dto.getCreatedBy()));
+        if(dto.getUser() != null) {
+            ticket.setUser(UserMapper.transferToUser(dto.getUser()));
         }
 
         if(dto.getCategory() != null) {
@@ -75,8 +75,8 @@ public class TicketMapper {
 
         for(Ticket ticket : tickets) {
             TicketOutputDto dto = transferToDto(ticket);
-            if(ticket.getCreatedBy() != null) {
-                dto.setCreatedBy(UserMapper.transferToDto(ticket.getCreatedBy()));
+            if(ticket.getUser() != null) {
+                dto.setUser(UserMapper.transferToDto(ticket.getUser()));
             }
             if(ticket.getCategory() != null) {
                 dto.setCategory(CategoryMapper.transferToDto(ticket.getCategory()));

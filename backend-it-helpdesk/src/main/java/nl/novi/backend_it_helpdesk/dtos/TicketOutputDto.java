@@ -11,7 +11,7 @@ import java.util.List;
 public class TicketOutputDto {
 
     private Long id;
-    private UserOutputDto createdBy;
+    private UserOutputDto user;
     private LocalDateTime createdAt;
     private PriorityTicketEnum priority;
     private CategoryOutputDto category;
@@ -23,10 +23,10 @@ public class TicketOutputDto {
 
     public TicketOutputDto() {}
 
-    public TicketOutputDto(Long id, LocalDateTime createdAt, UserOutputDto createdBy, Date closedAt, PriorityTicketEnum priority, CategoryOutputDto category, DetailOutputDto detail, FixOutputDto fix, List<Screenshot> screenshots) {
+    public TicketOutputDto(Long id, LocalDateTime createdAt, UserOutputDto user, Date closedAt, PriorityTicketEnum priority, CategoryOutputDto category, DetailOutputDto detail, FixOutputDto fix, List<Screenshot> screenshots) {
         this.id = id;
         this.createdAt = createdAt;
-        this.createdBy = createdBy;
+        this.user = user;
         this.closedAt = closedAt;
         this.priority = priority;
         this.category = category;
@@ -51,13 +51,12 @@ public class TicketOutputDto {
         this.createdAt = createdAt;
     }
 
-
-    public UserOutputDto getCreatedBy() {
-        return createdBy;
+    public UserOutputDto getUser() {
+        return user;
     }
 
-    public void setCreatedBy(UserOutputDto createdBy) {
-        this.createdBy = createdBy;
+    public void setUser(UserOutputDto user) {
+        this.user = user;
     }
 
     public Date getClosedAt() {

@@ -2,7 +2,6 @@ package nl.novi.backend_it_helpdesk.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
-import lombok.NoArgsConstructor;
 import nl.novi.backend_it_helpdesk.enums.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.springframework.data.annotation.CreatedBy;
@@ -44,12 +43,12 @@ public class Ticket {
 
     @CreatedBy
     @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "createdBy_id")
-    private User createdBy;
+    @JoinColumn(name = "user_id")
+    private User user;
 
     public Ticket() {}
 
-    public Ticket(Long id, LocalDateTime createdAt, PriorityTicketEnum priority, Category category, Detail detail, Fix fix, List<Screenshot> screenshots, User createdBy) {
+    public Ticket(Long id, LocalDateTime createdAt, PriorityTicketEnum priority, Category category, Detail detail, Fix fix, List<Screenshot> screenshots, User user) {
         this.id = id;
         this.createdAt = createdAt;
         this.priority = priority;
@@ -57,7 +56,7 @@ public class Ticket {
         this.detail = detail;
         this.fix = fix;
         this.screenshots = screenshots;
-        this.createdBy = createdBy;
+        this.user = user;
     }
 
     public LocalDateTime getCreatedAt() {
@@ -116,11 +115,12 @@ public class Ticket {
         this.screenshots = screenshots;
     }
 
-    public User getCreatedBy() {
-        return createdBy;
+    public User getUser() {
+        return user;
     }
 
-    public void setCreatedBy(User createdBy) {
-        this.createdBy = createdBy;
+    public void setUser(User user) {
+        this.user = user;
     }
+
 }

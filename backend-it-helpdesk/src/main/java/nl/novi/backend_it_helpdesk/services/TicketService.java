@@ -56,8 +56,8 @@ public class TicketService {
         return transferTicketListToDtoList(ticketList);
     }
 
-    public List<TicketOutputDto> getAllTicketsByCreatedBy(User createdBy) {
-        List<Ticket> ticketList = ticketRepository.findAllByCreatedBy(createdBy);
+    public List<TicketOutputDto> getAllTicketsByUser(User user) {
+        List<Ticket> ticketList = ticketRepository.findAllByUser(user);
         return transferTicketListToDtoList(ticketList);
     }
 
@@ -87,7 +87,7 @@ public class TicketService {
             tk1.setId(tk.getId());
             tk1.setCreatedAt(tk.getCreatedAt());
 
-           if (tk1.getCategory() != null) {
+            if (tk1.getCategory() != null) {
                 tk1.getCategory().setId(tk.getCategory().getId());
 
                 if (tk1.getCategory().getCategoryName() == null) {
@@ -96,11 +96,9 @@ public class TicketService {
                 if (tk1.getCategory().getSubCategoryName() == null) {
                     tk1.getCategory().setSubCategoryName(tk.getCategory().getSubCategoryName());
                 }
-            } else {
-                tk1.setCategory(tk.getCategory());
-            }
+            } else {tk1.setCategory(tk.getCategory());}
 
-          if (tk1.getDetail() != null) {
+            if (tk1.getDetail() != null) {
                 tk1.getDetail().setId(tk.getDetail().getId());
 
                 if (tk1.getDetail().getTitle() == null) {
@@ -112,9 +110,7 @@ public class TicketService {
                 if (tk1.getDetail().getDescription() == null) {
                     tk1.getDetail().setDescription(tk.getDetail().getDescription());
                 }
-            } else {
-                tk1.setDetail(tk.getDetail());
-            }
+            } else {tk1.setDetail(tk.getDetail());}
 
             if (tk1.getFix() != null) {
                 tk1.getFix().setId(tk.getFix().getId());
@@ -126,32 +122,25 @@ public class TicketService {
                     tk1.getFix().setFeedback(tk.getFix().getFeedback());
                 }
                 if (tk1.getFix().getStatus() == null) {
-                    tk1.getFix().setStatus(tk.getFix().getStatus());}
-            }
-            else {tk1.setFix(tk.getFix());}
-
-            System.out.println(updateTicket.getFix().getStatus());
-            System.out.println(tk.getFix().getStatus());
-            System.out.println(tk1.getFix().getStatus());
-
-
-            if (tk1.getCreatedBy() != null) {
-                tk1.getCreatedBy().setUsername(tk1.getCreatedBy().getUsername());
-
-                if (tk1.getCreatedBy().getEmail() == null) {
-                    tk1.getCreatedBy().setEmail(tk.getCreatedBy().getEmail());
+                    tk1.getFix().setStatus(tk.getFix().getStatus());
                 }
-                if (tk1.getCreatedBy().getPassword() == null) {
-                    tk1.getCreatedBy().setPassword(tk.getCreatedBy().getPassword());
+            } else {tk1.setFix(tk.getFix());}
+
+            if (tk1.getUser() != null) {
+                tk1.getUser().setUsername(tk1.getUser().getUsername());
+
+                if (tk1.getUser().getEmail() == null) {
+                    tk1.getUser().setEmail(tk.getUser().getEmail());
                 }
-                if (tk1.getCreatedBy().getRole() == null) {
-                    tk1.getCreatedBy().setRole(tk.getCreatedBy().getRole());
+                if (tk1.getUser().getPassword() == null) {
+                    tk1.getUser().setPassword(tk.getUser().getPassword());
+                }
+                if (tk1.getUser().getRole() == null) {
+                    tk1.getUser().setRole(tk.getUser().getRole());
                 } else {
-                    tk1.setCreatedBy(tk1.getCreatedBy());
+                    tk1.setUser(tk1.getUser());
                 }
-            } else {
-                tk1.setCreatedBy(tk.getCreatedBy());
-            }
+            } else {tk1.setUser(tk.getUser());}
 
             if (tk1.getPriority() == null) {
                 tk1.setPriority(tk.getPriority());
@@ -166,5 +155,10 @@ public class TicketService {
         }
 
     }
+
+
+
+
+
 }
 

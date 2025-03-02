@@ -9,7 +9,7 @@ import java.util.List;
 public class TicketInputDto {
 
     private PriorityTicketEnum priority;
-    private UserInputDto createdBy;
+    private UserInputDto user;
     private CategoryInputDto category;
     private DetailInputDto detail;
     private FixInputDto fix;
@@ -17,9 +17,9 @@ public class TicketInputDto {
 
     public TicketInputDto(){}
 
-    public TicketInputDto(PriorityTicketEnum priority, UserInputDto createdBy, CategoryInputDto category, DetailInputDto detail, FixInputDto fix, List<Screenshot> screenshots) {
+    public TicketInputDto(PriorityTicketEnum priority, UserInputDto user, CategoryInputDto category, DetailInputDto detail, FixInputDto fix, List<Screenshot> screenshots) {
         this.priority = priority;
-        this.createdBy = createdBy;
+        this.user = user;
         this.category = category;
         this.detail = detail;
         this.fix = fix;
@@ -34,12 +34,12 @@ public class TicketInputDto {
         this.priority = priority;
     }
 
-    public UserInputDto getCreatedBy() {
-        return createdBy;
+    public UserInputDto getUser() {
+        return user;
     }
 
-    public void setCreatedBy(UserInputDto createdBy) {
-        this.createdBy = createdBy;
+    public void setUser(UserInputDto user) {
+        this.user = user;
     }
 
     public CategoryInputDto getCategory() {
