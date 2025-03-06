@@ -26,6 +26,6 @@ public class TicketOutputDto {
     private DetailOutputDto detail;
     private FixOutputDto fix;
     List<ScreenshotOutputDto> screenshots = new ArrayList<>();
-    private Date closedAt;
+    private LocalDateTime closedAt;
 
 }

@@ -3,6 +3,7 @@ package nl.novi.backend_it_helpdesk.services;
 import jakarta.validation.Valid;
 import nl.novi.backend_it_helpdesk.dtos.TicketInputDto;
 import nl.novi.backend_it_helpdesk.dtos.TicketOutputDto;
+import nl.novi.backend_it_helpdesk.enums.StatusTicketEnum;
 import nl.novi.backend_it_helpdesk.exceptions.RecordNotFoundException;
 import nl.novi.backend_it_helpdesk.mappers.CategoryMapper;
 import nl.novi.backend_it_helpdesk.mappers.DetailMapper;
@@ -15,6 +16,7 @@ import nl.novi.backend_it_helpdesk.repositories.ScreenshotRepository;
 import nl.novi.backend_it_helpdesk.repositories.TicketRepository;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -94,6 +96,7 @@ public class TicketService {
 
             Ticket tk1 = transferToTicket(updateTicket);
 
+
             tk1.setId(tk.getId());
             tk1.setCreatedAt(tk.getCreatedAt());
 
@@ -131,9 +134,13 @@ public class TicketService {
                 if (tk1.getFix().getFeedback() == null) {
                     tk1.getFix().setFeedback(tk.getFix().getFeedback());
                 }
+                if(tk1.getFix().getStatus().equals(StatusTicketEnum.CLOSED)){
+                    tk1.setClosedAt(LocalDateTime.now());
+                }
                 if (tk1.getFix().getStatus() == null) {
                     tk1.getFix().setStatus(tk.getFix().getStatus());
                 }
+
             } else {tk1.setFix(tk.getFix());}
 
             if (tk1.getUser() != null) {

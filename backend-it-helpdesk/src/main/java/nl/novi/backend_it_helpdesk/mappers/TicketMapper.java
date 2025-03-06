@@ -16,6 +16,7 @@ public class TicketMapper {
         dto.setId(ticket.getId());
         dto.setCreatedAt(ticket.getCreatedAt());
         dto.setPriority(ticket.getPriority());
+        dto.setClosedAt(ticket.getClosedAt());
 
         if(ticket.getUser() != null) {
             dto.setUser(UserMapper.transferToDto(ticket.getUser()));
@@ -62,6 +63,7 @@ public class TicketMapper {
             ticket.setFix(FixMapper.transferToFix(dto.getFix()));
         }
 
+
         return ticket;
 
     }
@@ -86,6 +88,14 @@ public class TicketMapper {
             }
             if (ticket.getScreenshots() != null){
                 dto.setScreenshots(ScreenshotMapper.transferScreenshotListToDtoList(ticket.getScreenshots()));
+            }
+
+            if(ticket.getClosedAt() != null){
+                dto.setClosedAt(ticket.getClosedAt());
+            }
+
+            if(ticket.getPriority() != null){
+                dto.setPriority(ticket.getPriority());
             }
 
 

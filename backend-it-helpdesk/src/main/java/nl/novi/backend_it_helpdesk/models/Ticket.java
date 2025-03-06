@@ -13,6 +13,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @Getter
@@ -32,6 +33,7 @@ public class Ticket {
     private LocalDateTime createdAt;
     @Enumerated(EnumType.STRING)
     private PriorityTicketEnum priority;
+    private LocalDateTime closedAt;
 
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "category_id")
