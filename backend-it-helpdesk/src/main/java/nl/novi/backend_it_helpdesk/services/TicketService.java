@@ -7,11 +7,15 @@ import nl.novi.backend_it_helpdesk.exceptions.RecordNotFoundException;
 import nl.novi.backend_it_helpdesk.mappers.CategoryMapper;
 import nl.novi.backend_it_helpdesk.mappers.DetailMapper;
 import nl.novi.backend_it_helpdesk.mappers.FixMapper;
+import nl.novi.backend_it_helpdesk.mappers.ScreenshotMapper;
+import nl.novi.backend_it_helpdesk.models.Screenshot;
 import nl.novi.backend_it_helpdesk.models.Ticket;
 import nl.novi.backend_it_helpdesk.models.User;
+import nl.novi.backend_it_helpdesk.repositories.ScreenshotRepository;
 import nl.novi.backend_it_helpdesk.repositories.TicketRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static nl.novi.backend_it_helpdesk.mappers.TicketMapper.*;
@@ -20,9 +24,11 @@ import static nl.novi.backend_it_helpdesk.mappers.TicketMapper.*;
 public class TicketService {
 
     final private TicketRepository ticketRepository;
+    private final ScreenshotRepository screenshotRepository;
 
-    public TicketService(TicketRepository ticketRepository) {
+    public TicketService(TicketRepository ticketRepository, ScreenshotRepository screenshotRepository) {
         this.ticketRepository = ticketRepository;
+        this.screenshotRepository = screenshotRepository;
     }
 
     public TicketOutputDto getTicketById(Long id) {
@@ -41,6 +47,10 @@ public class TicketService {
 
             if (tk.getFix() != null) {
                 dto.setFix(FixMapper.transferToDto(tk.getFix()));
+            }
+
+            if (tk.getScreenshots() != null) {
+                dto.setScreenshots(ScreenshotMapper.transferScreenshotListToDtoList(tk.getScreenshots()));
             }
 
             return transferToDto(tk);
@@ -156,9 +166,21 @@ public class TicketService {
 
     }
 
+    public void addScreenshotToTicket(Long id, Screenshot st) {
 
+        var optionalTicket = ticketRepository.findById(id);
 
+        if(optionalTicket.isPresent()){
+            var ticket = optionalTicket.get();
+            st.setTicket(ticket);
+            ticket.getScreenshots().add(st);
+            ticketRepository.save(ticket);
 
+        }
+        else{
+            throw new RecordNotFoundException("Het ticketnummer:" + id + " is onbekend");
+        }
 
+    }
 }
 
