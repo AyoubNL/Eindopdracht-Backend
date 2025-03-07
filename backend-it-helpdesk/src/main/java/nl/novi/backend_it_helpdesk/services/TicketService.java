@@ -55,6 +55,7 @@ public class TicketService {
                 dto.setScreenshots(ScreenshotMapper.transferScreenshotListToDtoList(tk.getScreenshots()));
             }
 
+
             return transferToDto(tk);
 
         } else {
