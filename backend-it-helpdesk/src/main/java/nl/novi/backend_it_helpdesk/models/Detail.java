@@ -1,8 +1,10 @@
 package nl.novi.backend_it_helpdesk.models;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
-import nl.novi.backend_it_helpdesk.enums.PriorityTicketEnum;
+import lombok.Setter;
 import nl.novi.backend_it_helpdesk.enums.TypeTicketEnum;
 
 import java.util.ArrayList;
@@ -10,6 +12,10 @@ import java.util.List;
 
 @Entity
 @Table(name = "details")
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class Detail {
 
     @Id
@@ -23,53 +29,4 @@ public class Detail {
     @OneToMany(mappedBy = "detail")
     List<Ticket> tickets = new ArrayList<>();
 
-    public Detail() {}
-
-    public Detail(Long id, String title, String description, TypeTicketEnum type, List<Ticket> tickets) {
-        this.id = id;
-        this.title = title;
-        this.description = description;
-        this.type = type;
-        this.tickets = tickets;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public TypeTicketEnum getType() {
-        return type;
-    }
-
-    public void setType(TypeTicketEnum type) {
-        this.type = type;
-    }
-
-    public List<Ticket> getTickets() {
-        return tickets;
-    }
-
-    public void setTickets(List<Ticket> tickets) {
-        this.tickets = tickets;
-    }
 }

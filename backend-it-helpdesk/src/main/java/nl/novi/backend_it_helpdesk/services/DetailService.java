@@ -57,36 +57,36 @@ public class DetailService {
 
     }
 
-    public void deleteDetail(Long id){
+    public void deleteDetail(Long id) {
         detailRepository.deleteById(id);
     }
 
     public DetailOutputDto updateDetail(Long id, @Valid DetailInputDto updateDetail) {
 
-        Optional<Detail> detail = detailRepository.findById(id);
+        Detail dl = detailRepository.findById(id).get();
+        Detail dl1 = DetailMapper.transferToDetail(updateDetail);
 
-        if(detail.isPresent()) {
-
-            Detail dl = detailRepository.findById(id).get();
-
-            Detail dl1 = DetailMapper.transferToDetail(updateDetail);
+        if (detailRepository.findById(id).isPresent()) {
 
             dl1.setId(dl.getId());
 
-                if (dl1.getTitle() == null) {
-                    dl1.setTitle(dl.getTitle());
-                }
-                if (dl1.getType() == null) {
-                    dl1.setType(dl.getType());
-                }
-                if (dl1.getDescription() == null) {
-                    dl1.setDescription(dl.getDescription());
-                }
-                return DetailMapper.transferToDto(dl1);
-        }
-        else {
+            if (dl1.getType() == null) {
+                dl1.setType(dl.getType());
+            }
+            if (dl1.getDescription() == null) {
+                dl1.setDescription(dl.getDescription());
+            }
+            if (dl1.getTitle() == null) {
+                dl1.setTitle(dl.getTitle());
+            }
+
+            detailRepository.save(dl1);
+            return DetailMapper.transferToDto(dl1);
+        } else {
             throw new RecordNotFoundException("Het detailnummer: " + id + " is onbekend");
         }
 
     }
+
 }
+

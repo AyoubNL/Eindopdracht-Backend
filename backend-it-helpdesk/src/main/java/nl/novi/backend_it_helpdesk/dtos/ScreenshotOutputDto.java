@@ -4,17 +4,17 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import nl.novi.backend_it_helpdesk.enums.TypeTicketEnum;
 
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class DetailOutputDto {
+public class ScreenshotOutputDto {
 
     private Long id;
     private String title;
-    private String description;
-    private TypeTicketEnum type;
+    private String contentType;
+    private String url;
+    private Long size;
 
 }

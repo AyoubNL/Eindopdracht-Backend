@@ -28,9 +28,17 @@ public class DetailController {
     @GetMapping("/{id}")
     public ResponseEntity<DetailOutputDto> getDetail(@PathVariable Long id) {
 
-        DetailOutputDto detail = detailService.getDetailById(id);
+        if (!detailRepository.existsById(id)) {
 
-        return ResponseEntity.ok().body(detail);
+            return ResponseEntity.notFound().build();
+
+        } else {
+
+            DetailOutputDto detail = detailService.getDetailById(id);
+
+            return ResponseEntity.ok().body(detail);
+
+        }
 
     }
 
@@ -43,9 +51,9 @@ public class DetailController {
     }
 
     @PostMapping
-    public ResponseEntity<Object> addDetail(@RequestBody DetailInputDto detail) {
+    public ResponseEntity<Object> addDetail(@Valid @RequestBody DetailInputDto detail) {
 
-        try{
+        try {
 
             DetailOutputDto dto = detailService.addDetail(detail);
 
@@ -55,9 +63,7 @@ public class DetailController {
                     .buildAndExpand(dto.getId()).toUri();
 
             return ResponseEntity.created(uri).body(dto);
-        }
-
-        catch(Exception e){
+        } catch (Exception e) {
             return ResponseEntity.unprocessableEntity().body(e.getMessage());
         }
 
@@ -78,11 +84,9 @@ public class DetailController {
 
         DetailOutputDto outputDto = detailService.updateDetail(id, updateDetail);
 
-
         return ResponseEntity.ok().body(outputDto);
 
     }
-
 
 
 }

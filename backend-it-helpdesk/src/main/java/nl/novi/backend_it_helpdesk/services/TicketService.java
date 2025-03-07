@@ -3,15 +3,21 @@ package nl.novi.backend_it_helpdesk.services;
 import jakarta.validation.Valid;
 import nl.novi.backend_it_helpdesk.dtos.TicketInputDto;
 import nl.novi.backend_it_helpdesk.dtos.TicketOutputDto;
+import nl.novi.backend_it_helpdesk.enums.StatusTicketEnum;
 import nl.novi.backend_it_helpdesk.exceptions.RecordNotFoundException;
 import nl.novi.backend_it_helpdesk.mappers.CategoryMapper;
 import nl.novi.backend_it_helpdesk.mappers.DetailMapper;
 import nl.novi.backend_it_helpdesk.mappers.FixMapper;
+import nl.novi.backend_it_helpdesk.mappers.ScreenshotMapper;
+import nl.novi.backend_it_helpdesk.models.Screenshot;
 import nl.novi.backend_it_helpdesk.models.Ticket;
 import nl.novi.backend_it_helpdesk.models.User;
+import nl.novi.backend_it_helpdesk.repositories.ScreenshotRepository;
 import nl.novi.backend_it_helpdesk.repositories.TicketRepository;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 import static nl.novi.backend_it_helpdesk.mappers.TicketMapper.*;
@@ -20,9 +26,11 @@ import static nl.novi.backend_it_helpdesk.mappers.TicketMapper.*;
 public class TicketService {
 
     final private TicketRepository ticketRepository;
+    private final ScreenshotRepository screenshotRepository;
 
-    public TicketService(TicketRepository ticketRepository) {
+    public TicketService(TicketRepository ticketRepository, ScreenshotRepository screenshotRepository) {
         this.ticketRepository = ticketRepository;
+        this.screenshotRepository = screenshotRepository;
     }
 
     public TicketOutputDto getTicketById(Long id) {
@@ -43,6 +51,10 @@ public class TicketService {
                 dto.setFix(FixMapper.transferToDto(tk.getFix()));
             }
 
+            if (tk.getScreenshots() != null) {
+                dto.setScreenshots(ScreenshotMapper.transferScreenshotListToDtoList(tk.getScreenshots()));
+            }
+
             return transferToDto(tk);
 
         } else {
@@ -56,8 +68,8 @@ public class TicketService {
         return transferTicketListToDtoList(ticketList);
     }
 
-    public List<TicketOutputDto> getAllTicketsByCreatedBy(User createdBy) {
-        List<Ticket> ticketList = ticketRepository.findAllByCreatedBy(createdBy);
+    public List<TicketOutputDto> getAllTicketsByUser(User user) {
+        List<Ticket> ticketList = ticketRepository.findAllByUser(user);
         return transferTicketListToDtoList(ticketList);
     }
 
@@ -84,6 +96,7 @@ public class TicketService {
 
             Ticket tk1 = transferToTicket(updateTicket);
 
+
             tk1.setId(tk.getId());
             tk1.setCreatedAt(tk.getCreatedAt());
 
@@ -96,9 +109,7 @@ public class TicketService {
                 if (tk1.getCategory().getSubCategoryName() == null) {
                     tk1.getCategory().setSubCategoryName(tk.getCategory().getSubCategoryName());
                 }
-            } else {
-                tk1.setCategory(tk.getCategory());
-            }
+            } else {tk1.setCategory(tk.getCategory());}
 
             if (tk1.getDetail() != null) {
                 tk1.getDetail().setId(tk.getDetail().getId());
@@ -112,10 +123,7 @@ public class TicketService {
                 if (tk1.getDetail().getDescription() == null) {
                     tk1.getDetail().setDescription(tk.getDetail().getDescription());
                 }
-            } else {
-                tk1.setDetail(tk.getDetail());
-            }
-
+            } else {tk1.setDetail(tk.getDetail());}
 
             if (tk1.getFix() != null) {
                 tk1.getFix().setId(tk.getFix().getId());
@@ -126,31 +134,30 @@ public class TicketService {
                 if (tk1.getFix().getFeedback() == null) {
                     tk1.getFix().setFeedback(tk.getFix().getFeedback());
                 }
+                if(tk1.getFix().getStatus().equals(StatusTicketEnum.CLOSED)){
+                    tk1.setClosedAt(LocalDateTime.now());
+                }
                 if (tk1.getFix().getStatus() == null) {
                     tk1.getFix().setStatus(tk.getFix().getStatus());
+                }
+
+            } else {tk1.setFix(tk.getFix());}
+
+            if (tk1.getUser() != null) {
+                tk1.getUser().setUsername(tk1.getUser().getUsername());
+
+                if (tk1.getUser().getEmail() == null) {
+                    tk1.getUser().setEmail(tk.getUser().getEmail());
+                }
+                if (tk1.getUser().getPassword() == null) {
+                    tk1.getUser().setPassword(tk.getUser().getPassword());
+                }
+                if (tk1.getUser().getRole() == null) {
+                    tk1.getUser().setRole(tk.getUser().getRole());
                 } else {
-                    tk1.setFix(tk.getFix());
+                    tk1.setUser(tk1.getUser());
                 }
-            }
-
-
-            if (tk1.getCreatedBy() != null) {
-                tk1.getCreatedBy().setUsername(tk1.getCreatedBy().getUsername());
-
-                if (tk1.getCreatedBy().getEmail() == null) {
-                    tk1.getCreatedBy().setEmail(tk.getCreatedBy().getEmail());
-                }
-                if (tk1.getCreatedBy().getPassword() == null) {
-                    tk1.getCreatedBy().setPassword(tk.getCreatedBy().getPassword());
-                }
-                if (tk1.getCreatedBy().getRole() == null) {
-                    tk1.getCreatedBy().setRole(tk.getCreatedBy().getRole());
-                } else {
-                    tk1.setCreatedBy(tk1.getCreatedBy());
-                }
-            } else {
-                tk1.setCreatedBy(tk.getCreatedBy());
-            }
+            } else {tk1.setUser(tk.getUser());}
 
             if (tk1.getPriority() == null) {
                 tk1.setPriority(tk.getPriority());
@@ -162,6 +169,23 @@ public class TicketService {
 
         } else {
             throw new RecordNotFoundException("Het ticketnummer: " + id + " is onbekend");
+        }
+
+    }
+
+    public void addScreenshotToTicket(Long id, Screenshot st) {
+
+        var optionalTicket = ticketRepository.findById(id);
+
+        if(optionalTicket.isPresent()){
+            var ticket = optionalTicket.get();
+            st.setTicket(ticket);
+            ticket.getScreenshots().add(st);
+            ticketRepository.save(ticket);
+
+        }
+        else{
+            throw new RecordNotFoundException("Het ticketnummer:" + id + " is onbekend");
         }
 
     }
