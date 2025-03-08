@@ -9,6 +9,7 @@ import nl.novi.backend_it_helpdesk.models.User;
 import nl.novi.backend_it_helpdesk.repositories.UserRepository;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -18,9 +19,11 @@ import java.util.Optional;
 public class UserService{
 
     private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
 
-    public UserService(UserRepository userRepository) {
+    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     public UserOutputDto getUser(String username) {
@@ -49,6 +52,7 @@ public class UserService{
 
     public UserOutputDto addUser(@Valid UserInputDto dto) {
 
+        dto.setPassword(passwordEncoder.encode(dto.getPassword()));
         User ur = UserMapper.transferToUser(dto);
 
         userRepository.save(ur);
