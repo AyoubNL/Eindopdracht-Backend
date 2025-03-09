@@ -21,7 +21,6 @@ public class UserOutputDto {
 
     private String username;
     private String password;
-    private UserRoleEnum role;
     private String email;
     private Set<Authority> authorities = new HashSet<Authority>();
     List<Ticket> tickets = new ArrayList<>();

@@ -32,7 +32,8 @@ public class User {
 
     private String email;
 
-    @OneToMany(mappedBy = "username",
+    @OneToMany(targetEntity = Authority.class,
+            mappedBy = "username",
             cascade = CascadeType.ALL,
             orphanRemoval = true,
             fetch = FetchType.EAGER)
@@ -40,5 +41,9 @@ public class User {
 
     @OneToMany(mappedBy = "user")
     List<Ticket> tickets = new ArrayList<>();
+
+    public void addAuthority(Authority authority) {
+        authorities.add(authority);
+    }
 
 }

@@ -5,19 +5,16 @@ import nl.novi.backend_it_helpdesk.dtos.TicketInputDto;
 import nl.novi.backend_it_helpdesk.dtos.TicketOutputDto;
 import nl.novi.backend_it_helpdesk.enums.StatusTicketEnum;
 import nl.novi.backend_it_helpdesk.exceptions.RecordNotFoundException;
-import nl.novi.backend_it_helpdesk.mappers.CategoryMapper;
-import nl.novi.backend_it_helpdesk.mappers.DetailMapper;
-import nl.novi.backend_it_helpdesk.mappers.FixMapper;
-import nl.novi.backend_it_helpdesk.mappers.ScreenshotMapper;
+import nl.novi.backend_it_helpdesk.mappers.*;
+import nl.novi.backend_it_helpdesk.models.Authority;
 import nl.novi.backend_it_helpdesk.models.Screenshot;
 import nl.novi.backend_it_helpdesk.models.Ticket;
 import nl.novi.backend_it_helpdesk.models.User;
-import nl.novi.backend_it_helpdesk.repositories.ScreenshotRepository;
 import nl.novi.backend_it_helpdesk.repositories.TicketRepository;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 
 import static nl.novi.backend_it_helpdesk.mappers.TicketMapper.*;
@@ -26,11 +23,11 @@ import static nl.novi.backend_it_helpdesk.mappers.TicketMapper.*;
 public class TicketService {
 
     final private TicketRepository ticketRepository;
-    private final ScreenshotRepository screenshotRepository;
+    private final PasswordEncoder passwordEncoder;
 
-    public TicketService(TicketRepository ticketRepository, ScreenshotRepository screenshotRepository) {
+    public TicketService(TicketRepository ticketRepository, PasswordEncoder passwordEncoder) {
         this.ticketRepository = ticketRepository;
-        this.screenshotRepository = screenshotRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     public TicketOutputDto getTicketById(Long id) {
@@ -55,6 +52,10 @@ public class TicketService {
                 dto.setScreenshots(ScreenshotMapper.transferScreenshotListToDtoList(tk.getScreenshots()));
             }
 
+            if(tk.getUser() != null) {
+                dto.setUser(UserMapper.transferToDto(tk.getUser()));
+            }
+
 
             return transferToDto(tk);
 
@@ -76,11 +77,14 @@ public class TicketService {
 
     public TicketOutputDto addTicket(TicketInputDto dto) {
 
+        dto.getUser().setPassword(passwordEncoder.encode(dto.getUser().getPassword()));
+
         Ticket tk = transferToTicket(dto);
+        tk.getUser().addAuthority(new Authority(dto.getUser().getUsername(), dto.getUser().getRole()));
+
         ticketRepository.save(tk);
 
         return transferToDto(tk);
-
     }
 
     public void deleteTicket(Long id) {
@@ -110,7 +114,9 @@ public class TicketService {
                 if (tk1.getCategory().getSubCategoryName() == null) {
                     tk1.getCategory().setSubCategoryName(tk.getCategory().getSubCategoryName());
                 }
-            } else {tk1.setCategory(tk.getCategory());}
+            } else {
+                tk1.setCategory(tk.getCategory());
+            }
 
             if (tk1.getDetail() != null) {
                 tk1.getDetail().setId(tk.getDetail().getId());
@@ -124,7 +130,9 @@ public class TicketService {
                 if (tk1.getDetail().getDescription() == null) {
                     tk1.getDetail().setDescription(tk.getDetail().getDescription());
                 }
-            } else {tk1.setDetail(tk.getDetail());}
+            } else {
+                tk1.setDetail(tk.getDetail());
+            }
 
             if (tk1.getFix() != null) {
                 tk1.getFix().setId(tk.getFix().getId());
@@ -135,14 +143,16 @@ public class TicketService {
                 if (tk1.getFix().getFeedback() == null) {
                     tk1.getFix().setFeedback(tk.getFix().getFeedback());
                 }
-                if(tk1.getFix().getStatus().equals(StatusTicketEnum.CLOSED)){
+                if (tk1.getFix().getStatus().equals(StatusTicketEnum.CLOSED)) {
                     tk1.setClosedAt(LocalDateTime.now());
                 }
                 if (tk1.getFix().getStatus() == null) {
                     tk1.getFix().setStatus(tk.getFix().getStatus());
                 }
 
-            } else {tk1.setFix(tk.getFix());}
+            } else {
+                tk1.setFix(tk.getFix());
+            }
 
             if (tk1.getUser() != null) {
                 tk1.getUser().setUsername(tk1.getUser().getUsername());
@@ -153,12 +163,16 @@ public class TicketService {
                 if (tk1.getUser().getPassword() == null) {
                     tk1.getUser().setPassword(tk.getUser().getPassword());
                 }
-                if (tk1.getUser().getRole() == null) {
-                    tk1.getUser().setRole(tk.getUser().getRole());
+//                if (tk1.getUser().getRole() == null) {
+//                    tk1.getUser().setRole(tk.getUser().getRole());
+                if (tk1.getUser().getAuthorities() != null) {
+                    tk1.getUser().setAuthorities(tk1.getUser().getAuthorities());
                 } else {
                     tk1.setUser(tk1.getUser());
                 }
-            } else {tk1.setUser(tk.getUser());}
+            } else {
+                tk1.setUser(tk.getUser());
+            }
 
             if (tk1.getPriority() == null) {
                 tk1.setPriority(tk.getPriority());
@@ -178,14 +192,13 @@ public class TicketService {
 
         var optionalTicket = ticketRepository.findById(id);
 
-        if(optionalTicket.isPresent()){
+        if (optionalTicket.isPresent()) {
             var ticket = optionalTicket.get();
             st.setTicket(ticket);
             ticket.getScreenshots().add(st);
             ticketRepository.save(ticket);
 
-        }
-        else{
+        } else {
             throw new RecordNotFoundException("Het ticketnummer:" + id + " is onbekend");
         }
 

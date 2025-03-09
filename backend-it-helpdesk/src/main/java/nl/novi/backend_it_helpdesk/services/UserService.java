@@ -3,12 +3,12 @@ package nl.novi.backend_it_helpdesk.services;
 import jakarta.validation.Valid;
 import nl.novi.backend_it_helpdesk.dtos.UserInputDto;
 import nl.novi.backend_it_helpdesk.dtos.UserOutputDto;
+import nl.novi.backend_it_helpdesk.enums.UserRoleEnum;
 import nl.novi.backend_it_helpdesk.exceptions.UsernameNotFoundException;
 import nl.novi.backend_it_helpdesk.mappers.UserMapper;
+import nl.novi.backend_it_helpdesk.models.Authority;
 import nl.novi.backend_it_helpdesk.models.User;
 import nl.novi.backend_it_helpdesk.repositories.UserRepository;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -54,6 +54,7 @@ public class UserService{
 
         dto.setPassword(passwordEncoder.encode(dto.getPassword()));
         User ur = UserMapper.transferToUser(dto);
+        ur.addAuthority(new Authority(dto.getUsername(), dto.getRole()));
 
         userRepository.save(ur);
 
@@ -88,6 +89,11 @@ public class UserService{
                 us1.setRole(us.getRole());
             }
 
+            if(us1.getAuthorities() == null){
+                us1.setAuthorities(us.getAuthorities());
+            }
+
+
             userRepository.save(us1);
 
             return UserMapper.transferToDto(us1);
@@ -97,8 +103,16 @@ public class UserService{
             throw new UsernameNotFoundException(username);
         }
 
-
     }
+
+
+//    public void addAuthority(String username, UserRoleEnum authority) {
+//
+//        if (!userRepository.existsById(username)) throw new UsernameNotFoundException(username);
+//        User user = userRepository.findById(username).get();
+//        user.addAuthority(new Authority(username, authority));
+//        userRepository.save(user);
+//    }
 
 
 

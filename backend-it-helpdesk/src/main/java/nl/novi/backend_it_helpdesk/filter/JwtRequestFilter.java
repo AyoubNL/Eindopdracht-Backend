@@ -5,6 +5,7 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.NonNull;
 import nl.novi.backend_it_helpdesk.services.CustomUserDetailService;
 import nl.novi.backend_it_helpdesk.utils.JwtUtil;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -26,7 +27,7 @@ public class JwtRequestFilter extends OncePerRequestFilter {
     }
 
     @Override
-    protected void doFilterInternal(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, FilterChain filterChain ) throws ServletException, IOException, java.io.IOException {
+    protected void doFilterInternal(@NonNull HttpServletRequest httpServletRequest,@NonNull HttpServletResponse httpServletResponse,@NonNull FilterChain filterChain ) throws ServletException, IOException, java.io.IOException {
         final String authorizationHeader = httpServletRequest.getHeader("Authorization");
 
         String jwtToken = null;

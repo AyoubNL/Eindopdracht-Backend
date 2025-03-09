@@ -5,23 +5,30 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import nl.novi.backend_it_helpdesk.enums.UserRoleEnum;
 
 import java.io.Serializable;
 
-@Entity
 @Table(name = "authorities")
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @IdClass(AuthorityKey.class)
+@Entity
 public class Authority implements Serializable {
 
     @Id
     @Column(nullable = false)
     private String username;
 
+//    @Id
+//    @Column(nullable = false)
+//    private String authority;
+
     @Id
     @Column(nullable = false)
-    private String authority;
+    @Enumerated(EnumType.STRING)
+    private UserRoleEnum role;
 }
+

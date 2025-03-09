@@ -22,6 +22,7 @@ public class JwtUtil {
     private Key getSigningKey() {
         byte[] keyBytes = Decoders.BASE64.decode(SECRET_KEY);
         return Keys.hmacShaKeyFor(keyBytes);
+
     }
 
     public String extractUsername(String token) {
@@ -49,18 +50,20 @@ public class JwtUtil {
     public String generateToken(UserDetails userDetails) {
         Map<String, Object> claims = new HashMap<>();
 
-        return createToken(claims, userDetails.getUsername());
+        return createToken(claims, userDetails.getUsername(), userDetails.getAuthorities().toString());
 
     }
 
-    private String createToken(Map<String, Object> claims, String subject) {
+    private String createToken(Map<String, Object> claims, String subject, String authority) {
 
         long validPeriod = 1000 * 60 * 60;
         long currentTime = System.currentTimeMillis();
 
         return Jwts.builder()
                 .setClaims(claims)
-                .setSubject(subject)
+                .claim("user", subject)
+                .claim("role", authority)
+                .setAudience("IT-Helpdesk")
                 .setIssuedAt(new Date(currentTime))
                 .setExpiration(new Date(currentTime + validPeriod))
                 .signWith(getSigningKey(), SignatureAlgorithm.HS256)
