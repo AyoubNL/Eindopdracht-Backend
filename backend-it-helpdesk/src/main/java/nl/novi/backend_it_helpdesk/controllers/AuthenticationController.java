@@ -30,7 +30,9 @@ public class AuthenticationController {
 
     @GetMapping(value = "/authenticated")
     public ResponseEntity<Object> authenticated(Authentication authentication, Principal principal) {
+
         return ResponseEntity.ok().body(principal);
+
     }
 
     @PostMapping("/authenticate")

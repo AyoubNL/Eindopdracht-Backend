@@ -4,6 +4,7 @@ import nl.novi.backend_it_helpdesk.dtos.TicketInputDto;
 import nl.novi.backend_it_helpdesk.dtos.TicketOutputDto;
 import nl.novi.backend_it_helpdesk.models.Ticket;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 

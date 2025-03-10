@@ -2,8 +2,6 @@ package nl.novi.backend_it_helpdesk.controllers;
 
 import jakarta.validation.Valid;
 
-import nl.novi.backend_it_helpdesk.dtos.TicketInputDto;
-import nl.novi.backend_it_helpdesk.dtos.TicketOutputDto;
 import nl.novi.backend_it_helpdesk.dtos.UserInputDto;
 import nl.novi.backend_it_helpdesk.dtos.UserOutputDto;
 import nl.novi.backend_it_helpdesk.repositories.UserRepository;
@@ -14,10 +12,9 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
 import java.util.List;
-import java.util.Optional;
 
-@RestController
 @RequestMapping("/users")
+@RestController
 public class UserController {
 
     private final UserService userService;
@@ -31,7 +28,7 @@ public class UserController {
     @GetMapping("/{username}")
     public ResponseEntity<UserOutputDto> getUser(@PathVariable("username") String username) {
 
-        UserOutputDto user = userService.getUser(username.toLowerCase());
+        UserOutputDto user = userService.getUser(username);
 
         return ResponseEntity.ok().body(user);
 
@@ -62,6 +59,7 @@ public class UserController {
                     .buildAndExpand(dto.getUsername().toLowerCase()).toUri();
 
             return ResponseEntity.created(uri).body(dto);
+
         } catch (Exception e) {
             return ResponseEntity.unprocessableEntity().body(e.getMessage());
         }
