@@ -60,8 +60,8 @@ public class SpringSecurityConfig {
                 .httpBasic(basic -> basic.disable())
                 .cors(Customizer.withDefaults())
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers(HttpMethod.DELETE, "/users/Test02").hasRole("manager")
-                        .requestMatchers("/**").permitAll()
+                        .requestMatchers(HttpMethod.DELETE, "/users/**").hasAuthority("manager")
+                        .requestMatchers(HttpMethod.POST, "/users/**").permitAll()
                         .requestMatchers("/tickets/**").permitAll()
                         .requestMatchers("/authenticated").authenticated()
                         .requestMatchers("/authenticate").permitAll()

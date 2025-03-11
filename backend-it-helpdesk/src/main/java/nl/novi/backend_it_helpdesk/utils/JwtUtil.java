@@ -58,10 +58,10 @@ public class JwtUtil {
         long currentTime = System.currentTimeMillis();
 
         return Jwts.builder()
-                .setClaims(claims)
-                .claim("user", subject)
-                .claim("role", authority)
                 .setAudience("IT-Helpdesk")
+                .setClaims(claims)
+                .setSubject(subject)
+                .claim("role", authority)
                 .setIssuedAt(new Date(currentTime))
                 .setExpiration(new Date(currentTime + validPeriod))
                 .signWith(getSigningKey(), SignatureAlgorithm.HS256)
