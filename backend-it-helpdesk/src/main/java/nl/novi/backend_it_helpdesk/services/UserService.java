@@ -63,14 +63,14 @@ public class UserService{
 
     public void deleteUser(String username) {
 
-        userRepository.deleteById(username.toLowerCase());
+        userRepository.deleteById(username);
     }
 
     public UserOutputDto updateUser(String username, @Valid UserInputDto updateUser) {
 
         if (userRepository.existsById(username)) {
 
-            User us = userRepository.findById(username.toLowerCase()).get();
+            User us = userRepository.findById(username).get();
 
             User us1 = UserMapper.transferToUser(updateUser);
 

@@ -58,9 +58,9 @@ public class JwtUtil {
         long currentTime = System.currentTimeMillis();
 
         return Jwts.builder()
-                .setAudience("IT-Helpdesk")
                 .setClaims(claims)
                 .setSubject(subject)
+                .setAudience("IT-Helpdesk")
                 .claim("role", authority)
                 .setIssuedAt(new Date(currentTime))
                 .setExpiration(new Date(currentTime + validPeriod))

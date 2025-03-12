@@ -69,7 +69,7 @@ public class UserController {
     @DeleteMapping("/{username}")
     public ResponseEntity<Object> deleteUser(@PathVariable String username) {
 
-        userService.deleteUser(username.toLowerCase());
+        userService.deleteUser(username);
 
         return ResponseEntity.noContent().build();
     }
