@@ -51,16 +51,20 @@ public class SpringSecurityConfig {
     }
 
     @Bean
-    protected SecurityFilterChain filter (HttpSecurity http) throws Exception {
+    protected SecurityFilterChain filter(HttpSecurity http) throws Exception {
 
         http
                 .csrf(csrf -> csrf.disable())
                 .httpBasic(basic -> basic.disable())
                 .cors(Customizer.withDefaults())
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers(HttpMethod.DELETE, "/users/**").hasRole("manager")
+                        .requestMatchers(HttpMethod.POST,"/users", "/tickets", "/categories", "/details", "/fixes", "/screenshots/**").hasAnyAuthority("manager", "agent", "client")
                         .requestMatchers(HttpMethod.POST, "/users/**").permitAll()
-                        .requestMatchers("/tickets/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/tickets/**").hasAnyAuthority("manager", "agent")
+                        .requestMatchers(HttpMethod.POST, "/tickets/**").hasAnyAuthority("manager", "agent", "client")
+                        .requestMatchers(HttpMethod.DELETE, "/tickets/**").hasAnyAuthority("manager")
+                        .requestMatchers(HttpMethod.DELETE, "/users/**").hasAuthority("manager")
+                        .requestMatchers(HttpMethod.GET, "/users/**").hasAuthority("manager")
                         .requestMatchers("/authenticated").authenticated()
                         .requestMatchers("/authenticate").permitAll()
                         .anyRequest().denyAll()
@@ -70,15 +74,6 @@ public class SpringSecurityConfig {
         return http.build();
 
     }
-
-
-
-
-
-
-
-
-
 
 
 }

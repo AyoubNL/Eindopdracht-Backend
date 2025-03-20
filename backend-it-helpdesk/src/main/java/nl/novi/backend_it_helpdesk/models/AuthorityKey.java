@@ -9,7 +9,5 @@ public class AuthorityKey implements Serializable {
     private String username;
     private UserRoleEnum role;
 
-//    private String authority;
-
 
 }

@@ -51,7 +51,6 @@ public class JwtUtil {
         return createToken(claims, userDetails.getUsername(), userDetails.getAuthorities().toString());
 
     }
-
     private String createToken(Map<String, Object> claims, String subject, String authority) {
 
         long validPeriod = 1000 * 60 * 60;
@@ -75,7 +74,6 @@ public class JwtUtil {
         return username.equals(userDetails.getUsername()) && !isTokenExpired(token);
 
     }
-
 
 
 }

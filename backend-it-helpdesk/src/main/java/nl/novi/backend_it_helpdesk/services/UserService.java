@@ -26,7 +26,6 @@ public class UserService{
     }
 
     public UserOutputDto getUser(String username) {
-
         var dto = new UserOutputDto();
 
         Optional<User> user = userRepository.findById(username);
@@ -112,7 +111,6 @@ public class UserService{
 //        user.addAuthority(new Authority(username, authority));
 //        userRepository.save(user);
 //    }
-
 
 
 }

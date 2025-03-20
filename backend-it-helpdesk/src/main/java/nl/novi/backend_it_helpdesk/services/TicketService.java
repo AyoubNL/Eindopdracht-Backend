@@ -56,7 +56,6 @@ public class TicketService {
                 dto.setUser(UserMapper.transferToDto(tk.getUser()));
             }
 
-
             return transferToDto(tk);
 
         } else {
@@ -163,8 +162,6 @@ public class TicketService {
                 if (tk1.getUser().getPassword() == null) {
                     tk1.getUser().setPassword(tk.getUser().getPassword());
                 }
-//                if (tk1.getUser().getRole() == null) {
-//                    tk1.getUser().setRole(tk.getUser().getRole());
                 if (tk1.getUser().getAuthorities() != null) {
                     tk1.getUser().setAuthorities(tk1.getUser().getAuthorities());
                 } else {

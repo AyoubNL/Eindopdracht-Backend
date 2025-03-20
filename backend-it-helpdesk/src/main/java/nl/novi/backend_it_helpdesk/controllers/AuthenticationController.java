@@ -4,6 +4,7 @@ import nl.novi.backend_it_helpdesk.payload.AuthenticationRequest;
 import nl.novi.backend_it_helpdesk.payload.AuthenticationResponse;
 import nl.novi.backend_it_helpdesk.services.CustomUserDetailService;
 import nl.novi.backend_it_helpdesk.utils.JwtUtil;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -52,8 +53,8 @@ public class AuthenticationController {
 
         final String jwt = jwtUtil.generateToken(userDetails);
 
-        return ResponseEntity.ok(new AuthenticationResponse(jwt));
-
+        new AuthenticationResponse(jwt);
+        return ResponseEntity.ok().header(HttpHeaders.AUTHORIZATION, "Bearer " + jwt).body("jwt: " + jwt);
     }
 
 
