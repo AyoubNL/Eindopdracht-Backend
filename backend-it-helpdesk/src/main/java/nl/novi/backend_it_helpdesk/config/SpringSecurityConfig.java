@@ -37,11 +37,6 @@ public class SpringSecurityConfig {
     @Bean
     public AuthenticationManager authenticationManager(HttpSecurity http) throws Exception {
 
-//        var auth = new DaoAuthenticationProvider();
-//        auth.setPasswordEncoder(passwordEncoder);
-//        auth.setUserDetailsService(userDetailsService);
-//        return new ProviderManager(auth);
-
         return http.getSharedObject(AuthenticationManagerBuilder.class)
                 .userDetailsService(userDetailsService)
                 .passwordEncoder(passwordEncoder)
@@ -58,13 +53,13 @@ public class SpringSecurityConfig {
                 .httpBasic(basic -> basic.disable())
                 .cors(Customizer.withDefaults())
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers(HttpMethod.POST,"/users", "/tickets", "/categories", "/details", "/fixes", "/screenshots/**").hasAnyAuthority("manager", "agent", "client")
                         .requestMatchers(HttpMethod.POST, "/users/**").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/tickets/**").hasAnyAuthority("manager", "agent")
-                        .requestMatchers(HttpMethod.POST, "/tickets/**").hasAnyAuthority("manager", "agent", "client")
-                        .requestMatchers(HttpMethod.DELETE, "/tickets/**").hasAnyAuthority("manager")
-                        .requestMatchers(HttpMethod.DELETE, "/users/**").hasAuthority("manager")
-                        .requestMatchers(HttpMethod.GET, "/users/**").hasAuthority("manager")
+                        .requestMatchers(HttpMethod.POST, "/tickets", "/categories", "/details", "/fixes", "/screenshots/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/users/**", "/tickets/**", "/categories/*", "/details/*", "/fixes/*", "/screenshots/**").hasAuthority("AGENT")
+                        .requestMatchers(HttpMethod.PUT, "/users/**").hasAnyAuthority("MANAGER", "AGENT", "CLIENT")
+                        .requestMatchers(HttpMethod.PUT, "/tickets", "/categories", "/details", "/fixes", "/screenshots/**").hasAnyAuthority("MANAGER", "AGENT")
+                        .requestMatchers(HttpMethod.DELETE, "/tickets/**").hasAnyAuthority("MANAGER", "AGENT")
+                        .requestMatchers(HttpMethod.DELETE, "/users/**", "/tickets/*", "/categories/*", "/details/*", "/fixes/*", "/screenshots/**").hasAuthority("MANAGER")
                         .requestMatchers("/authenticated").authenticated()
                         .requestMatchers("/authenticate").permitAll()
                         .anyRequest().denyAll()

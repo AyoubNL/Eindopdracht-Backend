@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Set;
 
 @Service
@@ -33,8 +34,6 @@ public class CustomUserDetailService implements UserDetailsService {
 
         for(Authority authority : authorities){
             grantedAuthorities.add(new SimpleGrantedAuthority(authority.getRole().getUserRoleEnum()));
-
-            System.out.println(authority.getRole().getUserRoleEnum());
         }
 
         return new org.springframework.security.core.userdetails.User(username, password, grantedAuthorities);
