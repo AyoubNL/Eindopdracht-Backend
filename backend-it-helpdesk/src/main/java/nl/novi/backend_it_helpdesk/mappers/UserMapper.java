@@ -2,6 +2,7 @@ package nl.novi.backend_it_helpdesk.mappers;
 
 import nl.novi.backend_it_helpdesk.dtos.UserInputDto;
 import nl.novi.backend_it_helpdesk.dtos.UserOutputDto;
+import nl.novi.backend_it_helpdesk.models.Authority;
 import nl.novi.backend_it_helpdesk.models.User;
 
 import java.util.ArrayList;
@@ -17,7 +18,6 @@ public class UserMapper {
         dto.setEmail(user.getEmail());
         dto.setPassword(user.getPassword());
         dto.setAuthorities(user.getAuthorities());
-//        dto.setRole(user.getRole());
 
         return dto;
 

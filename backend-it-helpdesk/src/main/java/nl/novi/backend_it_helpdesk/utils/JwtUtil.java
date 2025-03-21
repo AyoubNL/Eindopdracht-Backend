@@ -51,11 +51,11 @@ public class JwtUtil {
     public String generateToken(UserDetails userDetails) {
         Map<String, Object> claims = new HashMap<>();
 
-        return createToken(claims, userDetails.getUsername());
+        return createToken(claims, userDetails.getUsername(), userDetails.getAuthorities().toString());
 
     }
 
-    private String createToken(Map<String, Object> claims, String subject) {
+    private String createToken(Map<String, Object> claims, String subject, String authorities) {
 
         long validPeriod = 1000 * 60 * 60;
         long currentTime = System.currentTimeMillis();
@@ -64,7 +64,7 @@ public class JwtUtil {
                 .setClaims(claims)
                 .setSubject(subject)
                 .setAudience("IT-Helpdesk")
-                .claim("sub", subject)
+                .claim("roles", authorities)
                 .setIssuedAt(new Date(currentTime))
                 .setExpiration(new Date(currentTime + validPeriod))
                 .signWith(getSigningKey(), SignatureAlgorithm.HS256)

@@ -55,7 +55,7 @@ public class SpringSecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(HttpMethod.POST, "/users/**").permitAll()
                         .requestMatchers(HttpMethod.POST, "/tickets", "/categories", "/details", "/fixes", "/screenshots/**").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/users/**", "/tickets/**", "/categories/*", "/details/*", "/fixes/*", "/screenshots/**").hasAuthority("AGENT")
+                        .requestMatchers(HttpMethod.GET, "/users/*", "/tickets/*", "/categories/*", "/details/*", "/fixes/*", "/screenshots/**").hasAuthority("agent")
                         .requestMatchers(HttpMethod.PUT, "/users/**").hasAnyAuthority("MANAGER", "AGENT", "CLIENT")
                         .requestMatchers(HttpMethod.PUT, "/tickets", "/categories", "/details", "/fixes", "/screenshots/**").hasAnyAuthority("MANAGER", "AGENT")
                         .requestMatchers(HttpMethod.DELETE, "/tickets/**").hasAnyAuthority("MANAGER", "AGENT")

@@ -3,6 +3,7 @@ package nl.novi.backend_it_helpdesk.services;
 import jakarta.validation.Valid;
 import nl.novi.backend_it_helpdesk.dtos.UserInputDto;
 import nl.novi.backend_it_helpdesk.dtos.UserOutputDto;
+import nl.novi.backend_it_helpdesk.enums.UserRoleEnum;
 import nl.novi.backend_it_helpdesk.exceptions.UsernameNotFoundException;
 import nl.novi.backend_it_helpdesk.mappers.UserMapper;
 import nl.novi.backend_it_helpdesk.models.Authority;
@@ -15,7 +16,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-public class UserService{
+public class UserService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
@@ -36,7 +37,6 @@ public class UserService{
             throw new UsernameNotFoundException(username);
         }
         return dto;
-
 
     }
 
@@ -87,7 +87,7 @@ public class UserService{
                 us1.setRole(us.getRole());
             }
 
-            if(us1.getAuthorities() == null){
+            if (us1.getAuthorities() == null) {
                 us1.setAuthorities(us.getAuthorities());
             }
 
@@ -96,21 +96,25 @@ public class UserService{
 
             return UserMapper.transferToDto(us1);
 
-        }
-        else{
+        } else {
             throw new UsernameNotFoundException(username);
         }
 
     }
 
+    public User getUserByUsername(String username) {
 
-//    public void addAuthority(String username, UserRoleEnum authority) {
-//
-//        if (!userRepository.existsById(username)) throw new UsernameNotFoundException(username);
-//        User user = userRepository.findById(username).get();
-//        user.addAuthority(new Authority(username, authority));
-//        userRepository.save(user);
-//    }
+        var user0 = new User();
+        Optional<User> user1 = userRepository.findById(username);
+
+        if (user1.isPresent()) {
+            user0.setPassword(user1.get().getPassword());
+            user0.addAuthority(new Authority(user1.get().getUsername(), user1.get().getRole()));
+
+        }
+        return user0;
+
+    }
 
 
 }
