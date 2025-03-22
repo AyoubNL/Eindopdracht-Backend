@@ -53,10 +53,6 @@ public class UserMapper {
                 dto.setAuthorities(user.getAuthorities());
             }
 
-//            if(user.getRole() != null) {
-//                dto.setRole(user.getRole());
-//            }
-
             if(user.getEmail() != null) {
                 dto.setEmail(user.getEmail());
             }
