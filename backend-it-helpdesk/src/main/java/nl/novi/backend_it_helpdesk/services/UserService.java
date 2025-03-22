@@ -57,7 +57,6 @@ public class UserService {
         userRepository.save(ur);
 
         return UserMapper.transferToDto(ur);
-
     }
 
     public void deleteUser(String username) {
@@ -86,11 +85,9 @@ public class UserService {
             if (us1.getRole() == null) {
                 us1.setRole(us.getRole());
             }
-
-            if (us1.getAuthorities() == null) {
-                us1.setAuthorities(us.getAuthorities());
+            else{
+                us1.addAuthority(new Authority(username, us1.getRole()));
             }
-
 
             userRepository.save(us1);
 
@@ -110,7 +107,6 @@ public class UserService {
         if (user1.isPresent()) {
             user0.setPassword(user1.get().getPassword());
             user0.addAuthority(new Authority(user1.get().getUsername(), user1.get().getRole()));
-
         }
         return user0;
 

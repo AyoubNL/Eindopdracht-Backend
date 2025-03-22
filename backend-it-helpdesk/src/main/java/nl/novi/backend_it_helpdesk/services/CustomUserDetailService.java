@@ -1,6 +1,5 @@
 package nl.novi.backend_it_helpdesk.services;
 
-
 import nl.novi.backend_it_helpdesk.models.Authority;
 import nl.novi.backend_it_helpdesk.models.User;
 import org.springframework.security.core.GrantedAuthority;
@@ -22,12 +21,6 @@ public class CustomUserDetailService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username){
-
-//        UserOutputDto dto = userService.getUser(username);
-//        String password = dto.getPassword();
-//        Set<Authority> authorities = dto.getAuthorities();
-//
-//        List<GrantedAuthority> grantedAuthorities = new ArrayList<>();
 
         User us = userService.getUserByUsername(username);
         String password = us.getPassword();

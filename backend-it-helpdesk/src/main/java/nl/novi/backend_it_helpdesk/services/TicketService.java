@@ -14,6 +14,7 @@ import nl.novi.backend_it_helpdesk.repositories.TicketRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -22,10 +23,11 @@ import static nl.novi.backend_it_helpdesk.mappers.TicketMapper.*;
 @Service
 public class TicketService {
 
-    final private TicketRepository ticketRepository;
+    private final TicketRepository ticketRepository;
     private final PasswordEncoder passwordEncoder;
 
-    public TicketService(TicketRepository ticketRepository, PasswordEncoder passwordEncoder) {
+    public TicketService(TicketRepository ticketRepository, PasswordEncoder passwordEncoder)
+    {
         this.ticketRepository = ticketRepository;
         this.passwordEncoder = passwordEncoder;
     }
