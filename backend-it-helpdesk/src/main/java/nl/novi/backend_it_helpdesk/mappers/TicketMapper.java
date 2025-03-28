@@ -19,23 +19,23 @@ public class TicketMapper {
         dto.setPriority(ticket.getPriority());
         dto.setClosedAt(ticket.getClosedAt());
 
-        if(ticket.getUser() != null) {
+        if (ticket.getUser() != null) {
             dto.setUser(UserMapper.transferToDto(ticket.getUser()));
         }
 
-        if(ticket.getCategory() != null) {
+        if (ticket.getCategory() != null) {
             dto.setCategory(CategoryMapper.transferToDto(ticket.getCategory()));
         }
 
-        if(ticket.getDetail() != null) {
+        if (ticket.getDetail() != null) {
             dto.setDetail(DetailMapper.transferToDto(ticket.getDetail()));
         }
 
-        if(ticket.getFix() != null) {
+        if (ticket.getFix() != null) {
             dto.setFix(FixMapper.transferToDto(ticket.getFix()));
         }
 
-        if(ticket.getScreenshots() != null){
+        if (ticket.getScreenshots() != null) {
             dto.setScreenshots(ScreenshotMapper.transferScreenshotListToDtoList(ticket.getScreenshots()));
         }
 
@@ -48,19 +48,19 @@ public class TicketMapper {
         ticket.setPriority(dto.getPriority());
         ticket.setScreenshots(dto.getScreenshots());
 
-        if(dto.getUser() != null) {
+        if (dto.getUser() != null) {
             ticket.setUser(UserMapper.transferToUser(dto.getUser()));
         }
 
-        if(dto.getCategory() != null) {
+        if (dto.getCategory() != null) {
             ticket.setCategory(CategoryMapper.transferToCategory(dto.getCategory()));
         }
 
-        if(dto.getDetail() != null) {
+        if (dto.getDetail() != null) {
             ticket.setDetail(DetailMapper.transferToDetail(dto.getDetail()));
         }
 
-        if(dto.getFix() != null){
+        if (dto.getFix() != null) {
             ticket.setFix(FixMapper.transferToFix(dto.getFix()));
         }
 
@@ -73,39 +73,33 @@ public class TicketMapper {
 
         List<TicketOutputDto> ticketDtoList = new ArrayList<>();
 
-        for(Ticket ticket : tickets) {
+        for (Ticket ticket : tickets) {
             TicketOutputDto dto = transferToDto(ticket);
-            if(ticket.getUser() != null) {
+            if (ticket.getUser() != null) {
                 dto.setUser(UserMapper.transferToDto(ticket.getUser()));
             }
-            if(ticket.getCategory() != null) {
+            if (ticket.getCategory() != null) {
                 dto.setCategory(CategoryMapper.transferToDto(ticket.getCategory()));
             }
-            if(ticket.getDetail() != null) {
+            if (ticket.getDetail() != null) {
                 dto.setDetail(DetailMapper.transferToDto(ticket.getDetail()));
             }
-            if(ticket.getFix() != null) {
+            if (ticket.getFix() != null) {
                 dto.setFix(FixMapper.transferToDto(ticket.getFix()));
             }
-            if (ticket.getScreenshots() != null){
+            if (ticket.getScreenshots() != null) {
                 dto.setScreenshots(ScreenshotMapper.transferScreenshotListToDtoList(ticket.getScreenshots()));
             }
-
-            if(ticket.getClosedAt() != null){
+            if (ticket.getClosedAt() != null) {
                 dto.setClosedAt(ticket.getClosedAt());
             }
-
-            if(ticket.getPriority() != null){
+            if (ticket.getPriority() != null) {
                 dto.setPriority(ticket.getPriority());
             }
-
-
             ticketDtoList.add(dto);
-
         }
-
         return ticketDtoList;
-
     }
 
 }
+
