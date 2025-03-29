@@ -88,11 +88,9 @@ public class TicketService {
         return transferToDto(tk);
     }
 
-    public boolean deleteTicket(Long id) {
+    public void deleteTicket(Long id) {
 
         ticketRepository.deleteById(id);
-
-        return true;
 
     }
 
