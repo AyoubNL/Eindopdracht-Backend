@@ -30,7 +30,6 @@ import static org.mockito.Mockito.*;
 @ExtendWith(MockitoExtension.class)
 @MockitoSettings(strictness = Strictness.LENIENT)
 class TicketServiceTest {
-
     @Mock
     private TicketRepository ticketRepository;
 
@@ -44,8 +43,10 @@ class TicketServiceTest {
     PasswordEncoder passwordEncoder;
 
     List<Ticket> mockTickets;
-    TicketInputDto newDto = new TicketInputDto(P4_INDIVIDUAL, new UserInputDto("Test04","test04@novi.nl",AGENT, "Test04@novi.nl"), new CategoryInputDto("Kantoor", "Bureaustoel"), new DetailInputDto("Bureaustoel stuk", "Mijn ergonomische bureaustoel is stuk", MALFUNCTION), new FixInputDto("Een nieuwe stoel besteld bij CoolBlue", "Helemaal top!", IN_PROGRESS), List.of(new Screenshot()));
 
+    TicketInputDto newDto = new TicketInputDto(P4_INDIVIDUAL, new UserInputDto("Test04", "test04@novi.nl", AGENT, "Test04@novi.nl"), new CategoryInputDto("Kantoor", "Bureaustoel"), new DetailInputDto("Bureaustoel stuk", "Mijn ergonomische bureaustoel is stuk", MALFUNCTION), new FixInputDto("Een nieuwe stoel besteld bij CoolBlue", "Helemaal top!", IN_PROGRESS), List.of(new Screenshot()));
+    byte[] data = new byte[1022];
+    Screenshot sh = new Screenshot("Foutmelding", "application/json", "www.test.nl", 2313L, data);
 
     @BeforeEach
     void setUp() {
@@ -53,7 +54,6 @@ class TicketServiceTest {
                 (new Ticket(2L, LocalDateTime.now(), P2_DEPARTEMENT, LocalDateTime.now().plusMinutes(45), new Category(2L, "Software", "Licentie", List.of(new Ticket())), new Detail(2L, "Licentie verlopen", "De licenties van ons Office pakket is bijna verlopen", QUESTION, List.of(new Ticket())), new Fix(2L, "De afdeling inkoop is bezig met een verlenging", "Wij kijken er naar uit!", IN_PROGRESS), List.of(new Screenshot()), new User("Test02", "$2a$10$.k.Ug5Pf7CGRf/QIw5zuy.BYCH17d5R.IlxHxS1r5SeZXgD6ptKRW", AGENT, "Test02@novi.nl", Set.of(new Authority("Test02", AGENT)), List.of(new Ticket())))),
                 (new Ticket(3L, LocalDateTime.now(), P3_TEAM, LocalDateTime.now().plusMinutes(30), new Category(3L, "Netwerk", "Internet", List.of(new Ticket())), new Detail(3L, "Internet traag", "Het hele bedrijf heeft soms last van trage internet", COMPLAINT, List.of(new Ticket())), new Fix(3L, "Er loopt een case bij onze ISP (KPN)", "Trage afhandeling", IN_PROGRESS), List.of(new Screenshot()), new User("Test03", "$2a$10$wMMChXMeYRqPSwSP/4Nns.CrFArfWhaBfswig.ljtEjbSvnd45gn6", CLIENT, "Test03@novi.nl", Set.of(new Authority("Test03", CLIENT)), List.of(new Ticket())))),
                 (new Ticket(4L, LocalDateTime.now(), P4_INDIVIDUAL, LocalDateTime.now().plusMinutes(30), new Category(4L, "Kantoor", "Bureaustoel", List.of(new Ticket())), new Detail(4L, "Bureaustoel stuk", "Mijn ergonomische bureaustoel is stuk", MALFUNCTION, List.of(new Ticket())), new Fix(4L, "Een nieuwe stoel besteld bij CoolBlue", "Helemaal top!", IN_PROGRESS), List.of(new Screenshot()), new User("Test04", "$2a$10$wMMChXMeYRqPSwSP/4Nns.CrFArfWhaBfswig.ljtEjbSvnd45gn7", CLIENT, "Test04@novi.nl", Set.of(new Authority("Test04", CLIENT)), List.of(new Ticket()))))
-
         );
 
     }
@@ -63,10 +63,19 @@ class TicketServiceTest {
     void testGetTicketById() {
         //arrange
         when(ticketRepository.findById(2L)).thenReturn(Optional.of(mockTickets.get(1)));
+
         //act
         Optional<TicketOutputDto> result = Optional.ofNullable(ticketService.getTicketById(2L));
         //assert
         assertTrue(result.isPresent());
+
+        assertFalse(mockTickets.isEmpty());
+
+        assertNotNull(mockTickets.get(1).getCategory().getId());
+        assertNotNull(mockTickets.get(1).getCategory().getCategoryName());
+        assertNotNull(mockTickets.get(1).getCategory().getSubCategoryName());
+        assertNotNull(mockTickets.get(1).getCategory().getTickets());
+
         assertEquals(2L, result.get().getId());
         assertEquals("Test02@novi.nl", result.get().getUser().getEmail());
         assertEquals("Software", result.get().getCategory().getCategoryName());
@@ -155,10 +164,9 @@ class TicketServiceTest {
     }
 
     @Test
-    void addTicket() {
+    @DisplayName("AddTicket")
+    void testAddTicket() {
         when(ticketRepository.save(captor.capture())).thenReturn(mockTickets.get(3));
-
-
 
         ticketService.addTicket(newDto);
         verify(ticketRepository, times(1)).save(captor.capture());
@@ -166,10 +174,34 @@ class TicketServiceTest {
         Ticket captured = captor.getValue();
         captor.getValue().getUser().setPassword(passwordEncoder.encode(newDto.getUser().getPassword()));
         assertEquals(mockTickets.get(3).getPriority(), captured.getPriority());
-
+        assertEquals(mockTickets.get(3).getCategory().getCategoryName(), captured.getCategory().getCategoryName());
+        assertEquals(mockTickets.get(3).getCategory().getSubCategoryName(), captured.getCategory().getSubCategoryName());
 
 
     }
 
 
+    @Test
+    @DisplayName("AddScreenshotToTicket")
+    void testAddScreenshotToTicket() {
+
+        when(ticketRepository.findById(1L)).thenReturn(Optional.of(mockTickets.getFirst()));
+
+        assertNotNull(mockTickets.getFirst());
+
+        ticketService.addScreenshotToTicket(1L, sh);
+
+        sh.setTicket(mockTickets.getFirst());
+
+//        mockTickets.getFirst().getScreenshots().add(sh);
+
+        Ticket captured = captor.getValue();
+
+        when(ticketRepository.save(captor.capture())).thenReturn(mockTickets.getFirst());
+
+        verify(ticketRepository, times(1)).save(captor.capture());
+
+        assertEquals(mockTickets.getFirst().getScreenshots().getFirst().getId(), captured.getScreenshots().getFirst().getId());
+
+    }
 }
