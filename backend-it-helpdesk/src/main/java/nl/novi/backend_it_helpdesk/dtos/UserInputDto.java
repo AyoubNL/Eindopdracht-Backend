@@ -23,4 +23,5 @@ public class UserInputDto {
     @Email(message = "Please enter a valid email Id")
     @NotNull(message = "Email is required")
     private String email;
+
 }
