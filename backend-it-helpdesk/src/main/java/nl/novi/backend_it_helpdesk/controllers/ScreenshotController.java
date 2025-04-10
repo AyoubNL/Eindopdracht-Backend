@@ -41,7 +41,7 @@ public class ScreenshotController {
 
         Screenshot st = screenshotService.storeFile(file, url);
 
-        ticketService.addScreenshotToTicket(id, st);
+        screenshotService.addScreenshotToTicket(id, st);
 
         return ResponseEntity.created(URI.create(url)).body(ScreenshotMapper.transferToDto(st));
 

@@ -7,7 +7,6 @@ import nl.novi.backend_it_helpdesk.enums.StatusTicketEnum;
 import nl.novi.backend_it_helpdesk.exceptions.RecordNotFoundException;
 import nl.novi.backend_it_helpdesk.mappers.*;
 import nl.novi.backend_it_helpdesk.models.Authority;
-import nl.novi.backend_it_helpdesk.models.Screenshot;
 import nl.novi.backend_it_helpdesk.models.Ticket;
 import nl.novi.backend_it_helpdesk.models.User;
 import nl.novi.backend_it_helpdesk.repositories.TicketRepository;
@@ -61,7 +60,7 @@ public class TicketService {
             return transferToDto(tk);
 
         } else {
-            throw new RecordNotFoundException("Het ticketnummer:" + id + " is onbekend");
+            throw new RecordNotFoundException("Het ticketnummer: " + id + " is onbekend");
         }
 
     }
@@ -101,7 +100,6 @@ public class TicketService {
             Ticket tk = ticketRepository.findById(id).get();
 
             Ticket tk1 = transferToTicket(updateTicket);
-
 
             tk1.setId(tk.getId());
             tk1.setCreatedAt(tk.getCreatedAt());
@@ -187,20 +185,7 @@ public class TicketService {
 
     }
 
-    public void addScreenshotToTicket(Long id, Screenshot st) {
 
-        var optionalTicket = ticketRepository.findById(id);
 
-        if (optionalTicket.isPresent()) {
-            var ticket = optionalTicket.get();
-            st.setTicket(ticket);
-            ticket.getScreenshots().add(st);
-            ticketRepository.save(ticket);
-
-        } else {
-            throw new RecordNotFoundException("Het ticketnummer:" + id + " is onbekend");
-        }
-
-    }
 }
 

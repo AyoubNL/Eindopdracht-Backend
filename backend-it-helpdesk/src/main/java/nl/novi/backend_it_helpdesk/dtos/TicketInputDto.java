@@ -24,4 +24,9 @@ public class TicketInputDto {
     private FixInputDto fix;
     List<Screenshot> screenshots = new ArrayList<>();
 
+    public TicketInputDto(PriorityTicketEnum priorityTicketEnum, CategoryInputDto categoryInputDto) {
+    }
+
+    public TicketInputDto(PriorityTicketEnum priorityTicketEnum) {
+    }
 }

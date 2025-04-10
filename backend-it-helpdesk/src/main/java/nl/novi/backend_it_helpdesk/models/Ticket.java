@@ -56,4 +56,12 @@ public class Ticket {
     @JoinColumn(name = "user_id")
     private User user;
 
+    public <E> Ticket(long l, LocalDateTime now, PriorityTicketEnum priorityTicketEnum, LocalDateTime localDateTime, Detail detail, Fix fix, List<E> es, User user) {
+    }
+
+    public Ticket(long l, LocalDateTime now, PriorityTicketEnum priorityTicketEnum, LocalDateTime localDateTime, Category category, Detail detail, User user) {
+    }
+
+    public Ticket(long l, LocalDateTime now, PriorityTicketEnum priorityTicketEnum, LocalDateTime localDateTime) {
+    }
 }
