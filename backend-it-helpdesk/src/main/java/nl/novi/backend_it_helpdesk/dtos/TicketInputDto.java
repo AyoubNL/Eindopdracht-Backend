@@ -10,7 +10,6 @@ import nl.novi.backend_it_helpdesk.models.*;
 import java.util.ArrayList;
 import java.util.List;
 
-
 @Getter
 @Setter
 @NoArgsConstructor
@@ -24,9 +23,14 @@ public class TicketInputDto {
     private FixInputDto fix;
     List<Screenshot> screenshots = new ArrayList<>();
 
-    public TicketInputDto(PriorityTicketEnum priorityTicketEnum, CategoryInputDto categoryInputDto) {
+    public TicketInputDto(PriorityTicketEnum priorityTicketEnum, CategoryInputDto categoryInputDto, FixInputDto fixInputDto, DetailInputDto detailInputDto, UserInputDto userInputDto) {
+        this.priority = priorityTicketEnum;
+        this.category = categoryInputDto;
+        this.fix = fixInputDto;
+        this.detail = detailInputDto;
+        this.user = userInputDto;
     }
 
-    public TicketInputDto(PriorityTicketEnum priorityTicketEnum) {
+    public TicketInputDto(PriorityTicketEnum priorityTicketEnum, FixInputDto fixInputDto, DetailInputDto detailInputDto, UserInputDto test04) {
     }
 }
