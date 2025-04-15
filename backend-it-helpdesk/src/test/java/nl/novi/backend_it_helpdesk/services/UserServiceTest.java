@@ -44,6 +44,7 @@ class UserServiceTest {
 
     List<User> mockUsers;
     UserInputDto userInputDto;
+    UserInputDto userInputDtoNull;
 
     @BeforeEach
     void setUp() {
@@ -53,6 +54,9 @@ class UserServiceTest {
         );
 
         userInputDto = new UserInputDto("Test03", "$2a$10$wMMChXMeYRqPSwSP/4Nns.CrFArfWhaBfswig.ljtEjbSvnd45gn6", CLIENT, "Test03@novi.nl");
+
+
+        userInputDtoNull = new UserInputDto(null, null, null, null);
     }
 
     @Test
@@ -149,6 +153,25 @@ class UserServiceTest {
     }
 
     @Test
+    @DisplayName("UpdateUserNull")
+    void testUpdateUserNull() {
+
+        when(userRepository.existsById("Test01")).thenReturn(true);
+
+        when(userRepository.findById("Test01")).thenReturn(Optional.of(mockUsers.getFirst()));
+
+        userService.updateUser("Test01", userInputDtoNull);
+
+        verify(userRepository, times(1)).save(captor.capture());
+
+        assertNull(userInputDtoNull.getEmail());
+        assertNull(userInputDtoNull.getRole());
+        assertNull(userInputDtoNull.getUsername());
+        assertNull(userInputDtoNull.getPassword());
+
+    }
+
+    @Test
     @DisplayName("throwExceptionUpdateUser")
     void testUpdateUserThrowsException() {
         assertThrows(UsernameNotFoundException.class, () -> userService.updateUser(null, userInputDto));
@@ -158,12 +181,11 @@ class UserServiceTest {
     @DisplayName("GetUserByUsername")
     void testGetUserByUsername() {
 
-        when(userRepository.findById("Test01")).thenReturn(Optional.of(mockUsers.getFirst()));
+     when(userRepository.findById("Test01")).thenReturn(Optional.of(mockUsers.getFirst()));
 
-        assertEquals("Test01", mockUsers.getFirst().getUsername());
-        assertEquals("Test01@novi.nl", mockUsers.getFirst().getEmail());
-        assertEquals(MANAGER, mockUsers.getFirst().getRole());
-        assertEquals("$2a$10$oh2jnssxP9pT/TcHPfhXb.au5/Fn1.7/AO.A1dRKA1jhunmuybd0.", mockUsers.getFirst().getPassword());
+     User us = userService.getUserByUsername("Test01");
+
+        assertEquals("$2a$10$oh2jnssxP9pT/TcHPfhXb.au5/Fn1.7/AO.A1dRKA1jhunmuybd0.", us.getPassword());
 
     }
 
