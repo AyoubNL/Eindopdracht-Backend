@@ -23,11 +23,10 @@ import java.util.Objects;
 public class ScreenshotController {
 
     private final ScreenshotService screenshotService;
-    private final TicketService ticketService;
 
-    public ScreenshotController(ScreenshotService screenshotService, TicketService ticketService) {
+
+    public ScreenshotController(ScreenshotService screenshotService) {
         this.screenshotService = screenshotService;
-        this.ticketService = ticketService;
     }
 
     @PostMapping("/{id}/tickets")
