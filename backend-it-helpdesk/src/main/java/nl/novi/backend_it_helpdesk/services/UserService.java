@@ -3,7 +3,6 @@ package nl.novi.backend_it_helpdesk.services;
 import jakarta.validation.Valid;
 import nl.novi.backend_it_helpdesk.dtos.UserInputDto;
 import nl.novi.backend_it_helpdesk.dtos.UserOutputDto;
-import nl.novi.backend_it_helpdesk.enums.UserRoleEnum;
 import nl.novi.backend_it_helpdesk.exceptions.UsernameNotFoundException;
 import nl.novi.backend_it_helpdesk.mappers.UserMapper;
 import nl.novi.backend_it_helpdesk.models.Authority;
@@ -14,6 +13,8 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+
+import static nl.novi.backend_it_helpdesk.mappers.UserMapper.transferToDto;
 
 @Service
 public class UserService {
@@ -32,7 +33,7 @@ public class UserService {
         Optional<User> user = userRepository.findById(username);
 
         if (user.isPresent()) {
-            dto = UserMapper.transferToDto(user.get());
+            dto = transferToDto(user.get());
         } else {
             throw new UsernameNotFoundException(username);
         }
@@ -56,7 +57,7 @@ public class UserService {
 
         userRepository.save(ur);
 
-        return UserMapper.transferToDto(ur);
+        return transferToDto(ur);
     }
 
     public void deleteUser(String username) {
@@ -91,7 +92,7 @@ public class UserService {
 
             userRepository.save(us1);
 
-            return UserMapper.transferToDto(us1);
+            return transferToDto(us1);
 
         } else {
             throw new UsernameNotFoundException(username);

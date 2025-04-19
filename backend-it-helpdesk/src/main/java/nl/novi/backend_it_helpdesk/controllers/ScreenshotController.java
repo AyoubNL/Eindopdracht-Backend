@@ -23,11 +23,10 @@ import java.util.Objects;
 public class ScreenshotController {
 
     private final ScreenshotService screenshotService;
-    private final TicketService ticketService;
 
-    public ScreenshotController(ScreenshotService screenshotService, TicketService ticketService) {
+
+    public ScreenshotController(ScreenshotService screenshotService) {
         this.screenshotService = screenshotService;
-        this.ticketService = ticketService;
     }
 
     @PostMapping("/{id}/tickets")
@@ -41,7 +40,7 @@ public class ScreenshotController {
 
         Screenshot st = screenshotService.storeFile(file, url);
 
-        ticketService.addScreenshotToTicket(id, st);
+        screenshotService.addScreenshotToTicket(id, st);
 
         return ResponseEntity.created(URI.create(url)).body(ScreenshotMapper.transferToDto(st));
 

@@ -14,7 +14,6 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 @Getter
@@ -49,12 +48,15 @@ public class Ticket {
     private Fix fix;
 
     @OneToMany(mappedBy = "ticket", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
-    @JsonIgnoreProperties(value = {"contents","contentType"} )
+    @JsonIgnoreProperties(value = {"contents", "contentType"})
     List<Screenshot> screenshots = new ArrayList<>();
 
     @CreatedBy
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "user_id")
     private User user;
+
+    public Ticket(long l, LocalDateTime now, PriorityTicketEnum priorityTicketEnum, LocalDateTime localDateTime) {
+    }
 
 }

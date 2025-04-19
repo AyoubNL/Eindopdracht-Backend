@@ -2,12 +2,16 @@ package nl.novi.backend_it_helpdesk.dtos;
 
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nl.novi.backend_it_helpdesk.enums.StatusTicketEnum;
 
 @Getter
 @Setter
+@AllArgsConstructor
+@NoArgsConstructor
 public class FixInputDto {
 
     @NotNull(message = "Solution is required")
