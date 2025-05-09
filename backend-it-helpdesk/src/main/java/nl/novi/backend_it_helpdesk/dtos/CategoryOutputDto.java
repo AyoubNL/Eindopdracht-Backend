@@ -9,7 +9,7 @@ import lombok.*;
 @AllArgsConstructor
 public class CategoryOutputDto {
 
-    private Long id;
+    private String id;
     private String categoryName;
     private String subCategoryName;
 

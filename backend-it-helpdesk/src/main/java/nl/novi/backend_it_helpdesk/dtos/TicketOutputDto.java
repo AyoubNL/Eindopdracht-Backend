@@ -18,7 +18,7 @@ import java.util.List;
 @AllArgsConstructor
 public class TicketOutputDto {
 
-    private Long id;
+    private String id;
     private UserOutputDto user;
     private LocalDateTime createdAt;
     private PriorityTicketEnum priority;
