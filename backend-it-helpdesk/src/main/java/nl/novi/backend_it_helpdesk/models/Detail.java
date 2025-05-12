@@ -20,7 +20,6 @@ import java.util.List;
 public class Detail {
 
     @Id
-//    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @CaId
     private String id;
     private String title;

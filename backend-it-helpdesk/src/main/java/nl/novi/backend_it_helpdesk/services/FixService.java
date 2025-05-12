@@ -23,7 +23,7 @@ public class FixService {
         this.fixRepository = fixRepository;
     }
 
-    public FixOutputDto getFixById(Long id) {
+    public FixOutputDto getFixById(String id) {
 
         Optional<Fix> fix = fixRepository.findById(id);
 
@@ -57,13 +57,13 @@ public class FixService {
         return FixMapper.transferToDto(fx);
     }
 
-    public void deleteDetail(Long id) {
+    public void deleteDetail(String id) {
 
         fixRepository.deleteById(id);
 
     }
 
-    public FixOutputDto updateFix(Long id, @Valid FixInputDto updateFix) {
+    public FixOutputDto updateFix(String id, @Valid FixInputDto updateFix) {
 
         Fix fx = fixRepository.findById(id).get();
         Fix fx1 = FixMapper.transferToFix(updateFix);

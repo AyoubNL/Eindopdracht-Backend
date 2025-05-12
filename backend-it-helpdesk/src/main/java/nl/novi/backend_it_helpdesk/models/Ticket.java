@@ -3,10 +3,7 @@ package nl.novi.backend_it_helpdesk.models;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import nl.novi.backend_it_helpdesk.config.CaId;
 import nl.novi.backend_it_helpdesk.enums.*;
 import org.hibernate.annotations.CreationTimestamp;
@@ -28,7 +25,6 @@ import java.util.List;
 public class Ticket {
 
     @Id
-//    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @CaId
     private String id;
     @Column(updatable = false)

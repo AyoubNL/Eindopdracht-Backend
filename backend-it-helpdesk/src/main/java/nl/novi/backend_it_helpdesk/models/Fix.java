@@ -17,7 +17,7 @@ import nl.novi.backend_it_helpdesk.enums.StatusTicketEnum;
 public class Fix {
 
     @Id
-//    @GeneratedValue(strategy = GenerationType.IDENTITY)
+
     @CaId
     private String id;
     private String solution;

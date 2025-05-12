@@ -26,7 +26,7 @@ public class DetailController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<DetailOutputDto> getDetail(@PathVariable Long id) {
+    public ResponseEntity<DetailOutputDto> getDetail(@PathVariable String id) {
 
         if (!detailRepository.existsById(id)) {
 
@@ -71,7 +71,7 @@ public class DetailController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Object> deleteDetail(@PathVariable Long id) {
+    public ResponseEntity<Object> deleteDetail(@PathVariable String id) {
 
         detailService.deleteDetail(id);
 
@@ -80,7 +80,7 @@ public class DetailController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<DetailOutputDto> updateDetail(@PathVariable Long id, @Valid @RequestBody DetailInputDto updateDetail) {
+    public ResponseEntity<DetailOutputDto> updateDetail(@PathVariable String id, @Valid @RequestBody DetailInputDto updateDetail) {
 
         DetailOutputDto outputDto = detailService.updateDetail(id, updateDetail);
 

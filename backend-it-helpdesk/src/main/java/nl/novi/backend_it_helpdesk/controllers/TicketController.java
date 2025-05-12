@@ -24,9 +24,9 @@ public class TicketController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<TicketOutputDto> getTicket(@PathVariable("id") Long id) {
+    public ResponseEntity<TicketOutputDto> getTicket(@PathVariable("id") String id) {
 
-        TicketOutputDto ticketOutputDto = ticketService.getTicketById(id);
+        TicketOutputDto ticketOutputDto = ticketService.getTicketById(id.toUpperCase());
 
         return ResponseEntity.ok().body(ticketOutputDto);
 
@@ -72,7 +72,7 @@ public class TicketController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Object> deleteTicket(@PathVariable Long id) {
+    public ResponseEntity<Object> deleteTicket(@PathVariable String id) {
 
         ticketService.deleteTicket(id);
 
@@ -81,7 +81,7 @@ public class TicketController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Object> updateTicket(@PathVariable Long id, @Valid @RequestBody TicketInputDto updateTicket) {
+    public ResponseEntity<Object> updateTicket(@PathVariable String id, @Valid @RequestBody TicketInputDto updateTicket) {
 
         TicketOutputDto outputDto = ticketService.updateTicket(id, updateTicket);
 

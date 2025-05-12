@@ -34,12 +34,12 @@ public class ScreenshotService {
 
     }
 
-    public Screenshot getScreenshotFromTicket(Long id) {
+    public Screenshot getScreenshotFromTicket(String id) {
 
         return screenshotRepository.findById(id).orElseThrow(RecordNotFoundException::new);
     }
 
-    public void addScreenshotToTicket(Long id, Screenshot st) {
+    public void addScreenshotToTicket(String id, Screenshot st) {
 
         var optionalTicket = ticketRepository.findById(id);
 

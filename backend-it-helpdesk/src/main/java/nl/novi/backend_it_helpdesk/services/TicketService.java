@@ -30,7 +30,7 @@ public class TicketService {
         this.passwordEncoder = passwordEncoder;
     }
 
-    public TicketOutputDto getTicketById(Long id) {
+    public TicketOutputDto getTicketById(String id) {
 
         if (ticketRepository.findById(id).isPresent()) {
             Ticket tk = ticketRepository.findById(id).get();
@@ -86,13 +86,13 @@ public class TicketService {
         return transferToDto(tk);
     }
 
-    public void deleteTicket(Long id) {
+    public void deleteTicket(String id) {
 
         ticketRepository.deleteById(id);
 
     }
 
-    public TicketOutputDto updateTicket(Long id, @Valid TicketInputDto updateTicket) {
+    public TicketOutputDto updateTicket(String id, @Valid TicketInputDto updateTicket) {
 
         if (ticketRepository.findById(id).isPresent()) {
             Ticket tk = ticketRepository.findById(id).get();

@@ -22,7 +22,7 @@ public class DetailService {
         this.detailRepository = detailRepository;
     }
 
-    public DetailOutputDto getDetailById(Long id) {
+    public DetailOutputDto getDetailById(String id) {
 
         Optional<Detail> detail = detailRepository.findById(id);
 
@@ -57,11 +57,11 @@ public class DetailService {
 
     }
 
-    public void deleteDetail(Long id) {
+    public void deleteDetail(String id) {
         detailRepository.deleteById(id);
     }
 
-    public DetailOutputDto updateDetail(Long id, @Valid DetailInputDto updateDetail) {
+    public DetailOutputDto updateDetail(String id, @Valid DetailInputDto updateDetail) {
 
         Detail dl = detailRepository.findById(id).get();
         Detail dl1 = DetailMapper.transferToDetail(updateDetail);

@@ -30,7 +30,7 @@ public class ScreenshotController {
     }
 
     @PostMapping("/{id}/tickets")
-    public ResponseEntity<ScreenshotOutputDto> uploadScreenshot(@PathVariable("id") Long id, @RequestBody MultipartFile file) throws IOException {
+    public ResponseEntity<ScreenshotOutputDto> uploadScreenshot(@PathVariable("id") String id, @RequestBody MultipartFile file) throws IOException {
 
         String url = ServletUriComponentsBuilder.fromCurrentContextPath()
                 .path("/tickets/")
@@ -47,7 +47,7 @@ public class ScreenshotController {
     }
 
     @GetMapping("/{id}")
-    ResponseEntity<byte[]> getScreenshot(@PathVariable("id") Long id) {
+    ResponseEntity<byte[]> getScreenshot(@PathVariable("id") String id) {
 
         Screenshot screenshot = screenshotService.getScreenshotFromTicket(id);
 

@@ -23,7 +23,7 @@ public class CategoryService {
         this.categoryRepository = categoryRepository;
     }
 
-    public CategoryOutputDto getCategoryById(Long id){
+    public CategoryOutputDto getCategoryById(String id){
 
         if(categoryRepository.findById(id).isPresent()){
             Category category = categoryRepository.findById(id).get();
@@ -54,12 +54,12 @@ public class CategoryService {
         return CategoryMapper.transferToDto(cat);
     }
 
-    public void deleteTicket(Long id) {
+    public void deleteTicket(String id) {
 
         categoryRepository.deleteById(id);
     }
 
-    public CategoryOutputDto updateCategory(Long id, CategoryInputDto updateCategory) {
+    public CategoryOutputDto updateCategory(String id, CategoryInputDto updateCategory) {
 
         if(categoryRepository.findById(id).isPresent()){
 

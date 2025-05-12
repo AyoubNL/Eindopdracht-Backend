@@ -21,7 +21,7 @@ public class FixController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<FixOutputDto> getFix(@PathVariable("id") Long id) {
+    public ResponseEntity<FixOutputDto> getFix(@PathVariable("id") String id) {
 
         FixOutputDto fix = fixService.getFixById(id);
 
@@ -58,7 +58,7 @@ public class FixController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Object> deleteFix(@PathVariable Long id) {
+    public ResponseEntity<Object> deleteFix(@PathVariable String id) {
 
         fixService.deleteDetail(id);
 
@@ -67,7 +67,7 @@ public class FixController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<FixOutputDto> updateDetail(@PathVariable Long id, @Valid @RequestBody FixInputDto updateFix) {
+    public ResponseEntity<FixOutputDto> updateDetail(@PathVariable String id, @Valid @RequestBody FixInputDto updateFix) {
 
         FixOutputDto outputDto = fixService.updateFix(id, updateFix);
 
