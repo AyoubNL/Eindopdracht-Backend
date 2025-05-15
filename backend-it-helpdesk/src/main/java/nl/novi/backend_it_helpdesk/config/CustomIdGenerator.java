@@ -1,5 +1,7 @@
 package nl.novi.backend_it_helpdesk.config;
 
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import org.hibernate.MappingException;
 import org.hibernate.engine.spi.SharedSessionContractImplementor;
 import org.hibernate.id.enhanced.SequenceStyleGenerator;
@@ -11,7 +13,6 @@ import org.hibernate.type.internal.NamedBasicTypeImpl;
 
 import java.util.Properties;
 
-
 public class CustomIdGenerator extends SequenceStyleGenerator {
 
     public final String INCREMENT_PARAM = "increment_size";
@@ -20,6 +21,7 @@ public class CustomIdGenerator extends SequenceStyleGenerator {
 
     @Override
     public Object generate( SharedSessionContractImplementor session, Object object ) {
+
         return "CASE" + String.format( "%05d", super.generate( session, object ) );
     }
 

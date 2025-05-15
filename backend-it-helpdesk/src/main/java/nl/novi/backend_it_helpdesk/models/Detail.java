@@ -26,4 +26,7 @@ public class Detail {
     private String description;
     @Enumerated(EnumType.STRING)
     private TypeTicketEnum type;
+
+    @OneToMany(mappedBy = "detail")
+    List<Ticket> tickets = new ArrayList<>();
 }

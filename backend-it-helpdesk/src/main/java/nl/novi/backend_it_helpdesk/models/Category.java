@@ -17,11 +17,13 @@ import java.util.List;
 @Entity
 public class Category {
 
-
     @Id
     @CaId
     private String id;
     private String categoryName;
     private String subCategoryName;
+
+    @OneToMany(mappedBy = "category")
+    List<Ticket> tickets = new ArrayList<>();
 
 }
