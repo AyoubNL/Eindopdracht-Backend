@@ -6,13 +6,13 @@ import nl.novi.backend_it_helpdesk.dtos.TicketOutputDto;
 import nl.novi.backend_it_helpdesk.enums.StatusTicketEnum;
 import nl.novi.backend_it_helpdesk.exceptions.RecordNotFoundException;
 import nl.novi.backend_it_helpdesk.mappers.*;
-import nl.novi.backend_it_helpdesk.models.Authority;
 import nl.novi.backend_it_helpdesk.models.Ticket;
 import nl.novi.backend_it_helpdesk.models.User;
 import nl.novi.backend_it_helpdesk.repositories.TicketRepository;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -53,7 +53,7 @@ public class TicketService {
             }
 
             if(tk.getUser() != null) {
-                dto.setUser(UserMapper.transferToDto(tk.getUser()));
+                dto.setUser(tk.getUser());
             }
 
             return transferToDto(tk);
@@ -76,10 +76,21 @@ public class TicketService {
 
     public TicketOutputDto addTicket(TicketInputDto dto) {
 
-        dto.getUser().setPassword(passwordEncoder.encode(dto.getUser().getPassword()));
-
         Ticket tk = transferToTicket(dto);
-        tk.getUser().addAuthority(new Authority(dto.getUser().getUsername(), dto.getUser().getRole()));
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        tk.setUser(authentication.getName());
+
+        String info1 = authentication.getName();
+        String info3 = authentication.getDetails().toString();
+        String info4 = authentication.getAuthorities().toString();
+        String info5 = authentication.getPrincipal().toString();
+
+        System.out.println(info1);
+        System.out.println(info3);
+        System.out.println(info4);
+        System.out.println(info5);
 
         ticketRepository.save(tk);
 
@@ -100,6 +111,8 @@ public class TicketService {
 
             tk1.setId(tk.getId());
             tk1.setCreatedAt(tk.getCreatedAt());
+            tk1.setUser(tk.getUser());
+
             if (tk1.getCategory() != null) {
                 tk1.getCategory().setId(tk.getCategory().getId());
 
@@ -146,22 +159,6 @@ public class TicketService {
 
             } else {
                 tk1.setFix(tk.getFix());}
-
-            if (tk1.getUser() != null) {
-                tk1.getUser().setUsername(tk1.getUser().getUsername());
-
-                if (tk1.getUser().getEmail() == null) {
-                    tk1.getUser().setEmail(tk.getUser().getEmail());
-                }
-                if (tk1.getUser().getPassword() == null) {
-                    tk1.getUser().setPassword(tk.getUser().getPassword());
-                }
-                if (tk1.getUser().getAuthorities() != null) {
-                    tk1.getUser().setAuthorities(tk1.getUser().getAuthorities());
-                }
-            } else {
-                tk1.setUser(tk.getUser());
-            }
 
             if (tk1.getPriority() == null) {
                 tk1.setPriority(tk.getPriority());

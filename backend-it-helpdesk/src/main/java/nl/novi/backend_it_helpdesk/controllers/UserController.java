@@ -80,11 +80,6 @@ public class UserController {
         UserOutputDto outputDto = userService.updateUser(username, updateUser);
 
         return ResponseEntity.ok().body(outputDto);
-
-
     }
-
-
-
 
 }

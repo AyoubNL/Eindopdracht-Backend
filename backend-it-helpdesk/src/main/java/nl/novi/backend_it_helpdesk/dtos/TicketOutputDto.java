@@ -17,7 +17,7 @@ import java.util.List;
 public class TicketOutputDto {
 
     private String id;
-    private UserOutputDto user;
+    private String user;
     private LocalDateTime createdAt;
     private PriorityTicketEnum priority;
     private CategoryOutputDto category;

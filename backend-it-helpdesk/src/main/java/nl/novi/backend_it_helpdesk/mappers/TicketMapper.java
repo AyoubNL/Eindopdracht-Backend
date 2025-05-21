@@ -4,7 +4,6 @@ import nl.novi.backend_it_helpdesk.dtos.TicketInputDto;
 import nl.novi.backend_it_helpdesk.dtos.TicketOutputDto;
 import nl.novi.backend_it_helpdesk.models.Ticket;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -18,10 +17,7 @@ public class TicketMapper {
         dto.setCreatedAt(ticket.getCreatedAt());
         dto.setPriority(ticket.getPriority());
         dto.setClosedAt(ticket.getClosedAt());
-
-        if (ticket.getUser() != null) {
-            dto.setUser(UserMapper.transferToDto(ticket.getUser()));
-        }
+        dto.setUser(ticket.getUser());
 
         if (ticket.getCategory() != null) {
             dto.setCategory(CategoryMapper.transferToDto(ticket.getCategory()));
@@ -48,10 +44,6 @@ public class TicketMapper {
         ticket.setPriority(dto.getPriority());
         ticket.setScreenshots(dto.getScreenshots());
 
-        if (dto.getUser() != null) {
-            ticket.setUser(UserMapper.transferToUser(dto.getUser()));
-        }
-
         if (dto.getCategory() != null) {
             ticket.setCategory(CategoryMapper.transferToCategory(dto.getCategory()));
         }
@@ -64,7 +56,6 @@ public class TicketMapper {
             ticket.setFix(FixMapper.transferToFix(dto.getFix()));
         }
 
-
         return ticket;
 
     }
@@ -76,7 +67,7 @@ public class TicketMapper {
         for (Ticket ticket : tickets) {
             TicketOutputDto dto = transferToDto(ticket);
             if (ticket.getUser() != null) {
-                dto.setUser(UserMapper.transferToDto(ticket.getUser()));
+                dto.setUser(ticket.getUser());
             }
             if (ticket.getCategory() != null) {
                 dto.setCategory(CategoryMapper.transferToDto(ticket.getCategory()));

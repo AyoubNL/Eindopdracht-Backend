@@ -1,13 +1,11 @@
 package nl.novi.backend_it_helpdesk.models;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.*;
 import nl.novi.backend_it_helpdesk.config.CaId;
 import nl.novi.backend_it_helpdesk.enums.*;
 import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.GenericGenerator;
 import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
@@ -51,9 +49,8 @@ public class Ticket {
     List<Screenshot> screenshots = new ArrayList<>();
 
     @CreatedBy
-    @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "user_id")
-    private User user;
+    @Column(updatable = false, name = "user_id")
+    private String user;
 
     public Ticket(long l, LocalDateTime now, PriorityTicketEnum priorityTicketEnum, LocalDateTime localDateTime) {
     }
