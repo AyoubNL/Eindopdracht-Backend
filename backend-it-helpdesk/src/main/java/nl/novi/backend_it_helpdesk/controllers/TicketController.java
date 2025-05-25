@@ -3,6 +3,7 @@ package nl.novi.backend_it_helpdesk.controllers;
 import jakarta.validation.Valid;
 import nl.novi.backend_it_helpdesk.dtos.TicketInputDto;
 import nl.novi.backend_it_helpdesk.dtos.TicketOutputDto;
+import nl.novi.backend_it_helpdesk.enums.StatusTicketEnum;
 import nl.novi.backend_it_helpdesk.models.User;
 import nl.novi.backend_it_helpdesk.services.TicketService;
 import org.springframework.http.ResponseEntity;
@@ -33,14 +34,12 @@ public class TicketController {
     }
 
     @GetMapping
-    public ResponseEntity<List<TicketOutputDto>> getAllTickets(@RequestParam(value = "user", required = false) Optional<User> user) {
+    public ResponseEntity<List<TicketOutputDto>> getAllTickets(@RequestParam(value = "user", required = false) Optional<String> user) {
 
         List<TicketOutputDto> dtos;
 
         if (user.isEmpty()) {
-
             dtos = ticketService.getAllTickets();
-
         }
 
         else{
@@ -84,11 +83,20 @@ public class TicketController {
     public ResponseEntity<Object> updateTicket(@PathVariable String id, @Valid @RequestBody TicketInputDto updateTicket) {
 
         TicketOutputDto outputDto = ticketService.updateTicket(id, updateTicket);
+        return ResponseEntity.ok().body(outputDto);
+
+    }
+
+    @PutMapping()
+    public ResponseEntity<Object> changeStatusTicket(@RequestParam String id, @Valid @RequestParam("status") StatusTicketEnum changeStatusTicket) {
+
+        TicketOutputDto outputDto = ticketService.changeStatusTicket(id, changeStatusTicket);
 
         return ResponseEntity.ok().body(outputDto);
 
 
     }
+
 
 
 

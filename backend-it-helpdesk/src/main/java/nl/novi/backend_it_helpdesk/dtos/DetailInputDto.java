@@ -1,5 +1,6 @@
 package nl.novi.backend_it_helpdesk.dtos;
 
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
@@ -14,11 +15,12 @@ import nl.novi.backend_it_helpdesk.enums.TypeTicketEnum;
 @AllArgsConstructor
 public class DetailInputDto {
 
-    @NotNull(message = "Title is required")
-    @Size(min=1, max=50, message = "Title too long (max 50 characters)")
+
+    @NotBlank(message = "Title is required")
+    @Size(min=1, max=50, message = "Title needed (max 50 characters)")
     private String title;
-    @NotNull(message = "Description is required")
-    @Size(min=1, max=400, message = "Description too long (max 400 characters)")
+    @NotBlank(message = "Description is required")
+    @Size(min=1, max=400, message = "Description needed (max 400 characters)")
     private String description;
     private TypeTicketEnum type;
 

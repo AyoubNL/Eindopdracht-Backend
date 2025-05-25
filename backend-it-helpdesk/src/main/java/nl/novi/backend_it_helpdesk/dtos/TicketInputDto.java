@@ -1,5 +1,6 @@
 package nl.novi.backend_it_helpdesk.dtos;
 
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -18,8 +19,11 @@ import java.util.List;
 public class TicketInputDto {
 
     private PriorityTicketEnum priority;
+    @Valid
     private CategoryInputDto category;
+    @Valid
     private DetailInputDto detail;
+    @Valid
     private FixInputDto fix;
     List<Screenshot> screenshots = new ArrayList<>();
 
