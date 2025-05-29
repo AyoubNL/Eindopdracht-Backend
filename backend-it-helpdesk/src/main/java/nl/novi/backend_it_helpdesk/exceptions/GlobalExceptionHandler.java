@@ -3,12 +3,12 @@ package nl.novi.backend_it_helpdesk.exceptions;
 import jakarta.validation.ConstraintViolationException;
 import lombok.extern.slf4j.Slf4j;
 import nl.novi.backend_it_helpdesk.dtos.ErrorDto;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import java.time.LocalDateTime;
@@ -26,6 +26,15 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(errorDto, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
+    @ExceptionHandler(NotAuthorizedUserException.class)
+    public ResponseEntity<ErrorDto> handleNotauthorizedUserException(NotAuthorizedUserException ex) {
+        log.error("Onbevoegd", ex);
+
+        ErrorDto errorDto = new ErrorDto("Onbevoegd", ex.getMessage(), LocalDateTime.now(), HttpStatus.UNAUTHORIZED.value());
+        return new ResponseEntity<>(errorDto, HttpStatus.UNAUTHORIZED);
+
+    }
+
     @ExceptionHandler(UsernameNotFoundException.class)
     public ResponseEntity<ErrorDto> handleUsernameNotFoundException(UsernameNotFoundException ex) {
         log.error("Gebruiker niet gevonden", ex);
@@ -34,7 +43,7 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(RecordNotFoundException.class)
-    public ResponseEntity<ErrorDto> RecordNotFoundException(RecordNotFoundException ex) {
+    public ResponseEntity<ErrorDto> handleRecordNotFoundException(RecordNotFoundException ex) {
         ErrorDto errorDto = new ErrorDto("Foutmelding: ", ex.getMessage(), LocalDateTime.now(), HttpStatus.NOT_FOUND.value());
         return new ResponseEntity<>(errorDto, HttpStatus.NOT_FOUND);
     }
@@ -66,5 +75,12 @@ public class GlobalExceptionHandler {
     }
 
 
+    @ExceptionHandler(EmptyResultDataAccessException.class)
+    public ResponseEntity<ErrorDto> handleEmptyResultDataAccessException(EmptyResultDataAccessException ex) {
+        log.error("Onbekende entiteit", ex);
+
+        ErrorDto errorDto = new ErrorDto("Onbekende entiteit", ex.getMessage(), LocalDateTime.now(), HttpStatus.NOT_FOUND.value());
+        return new ResponseEntity<>(errorDto, HttpStatus.NOT_FOUND);
+    }
 
 }

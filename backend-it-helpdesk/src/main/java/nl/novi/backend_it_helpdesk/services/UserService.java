@@ -3,11 +3,15 @@ package nl.novi.backend_it_helpdesk.services;
 import jakarta.validation.Valid;
 import nl.novi.backend_it_helpdesk.dtos.UserInputDto;
 import nl.novi.backend_it_helpdesk.dtos.UserOutputDto;
+import nl.novi.backend_it_helpdesk.exceptions.NotAuthorizedUserException;
 import nl.novi.backend_it_helpdesk.exceptions.UsernameNotFoundException;
 import nl.novi.backend_it_helpdesk.mappers.UserMapper;
 import nl.novi.backend_it_helpdesk.models.Authority;
 import nl.novi.backend_it_helpdesk.models.User;
 import nl.novi.backend_it_helpdesk.repositories.UserRepository;
+import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -49,10 +53,11 @@ public class UserService {
 
     }
 
-    public UserOutputDto addUser(@Valid UserInputDto dto) {
+    public UserOutputDto addUser(@Valid UserInputDto dto){
 
         dto.setPassword(passwordEncoder.encode(dto.getPassword()));
         User ur = UserMapper.transferToUser(dto);
+
         ur.addAuthority(new Authority(dto.getUsername(), dto.getRole()));
 
         userRepository.save(ur);
@@ -62,37 +67,50 @@ public class UserService {
 
     public void deleteUser(String username) {
 
-        userRepository.deleteById(username);
+        if(userRepository.existsById(username)) {
+
+            userRepository.deleteById(username);
+        }
+        else{
+            throw new EmptyResultDataAccessException("Onbekende entiteit", 1);
+        }
+
     }
 
     public UserOutputDto updateUser(String username, @Valid UserInputDto updateUser) {
 
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String currentUser = authentication.getName();
+
         if (userRepository.existsById(username)) {
 
-            User us = userRepository.findById(username).get();
+            if (currentUser.equals(username)) {
 
-            User us1 = UserMapper.transferToUser(updateUser);
+                User us = userRepository.findById(username).get();
+                User us1 = UserMapper.transferToUser(updateUser);
 
-            us1.setUsername(us.getUsername());
+                us1.setUsername(us.getUsername());
 
-            if (us1.getEmail() == null) {
-                us1.setEmail(us.getEmail());
-            }
+                if (us1.getEmail() == null) {
+                    us1.setEmail(us.getEmail());
+                }
+                if (us1.getPassword() == null) {
+                    us1.setPassword(us.getPassword());
+                }
+                if (us1.getRole() == null) {
+                    us1.setRole(us.getRole());
+                }
+                else{
+                    us1.addAuthority(new Authority(username, us1.getRole()));
+                }
 
-            if (us1.getPassword() == null) {
-                us1.setPassword(us.getPassword());
-            }
+                userRepository.save(us1);
 
-            if (us1.getRole() == null) {
-                us1.setRole(us.getRole());
+                return transferToDto(us1);
             }
             else{
-                us1.addAuthority(new Authority(username, us1.getRole()));
-            }
+                throw new NotAuthorizedUserException("De gebruiker " + currentUser+ " is niet gemachtigd, om aanpassingen te doen aan " +username);}
 
-            userRepository.save(us1);
-
-            return transferToDto(us1);
 
         } else {
             throw new UsernameNotFoundException(username);

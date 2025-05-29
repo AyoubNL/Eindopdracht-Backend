@@ -54,13 +54,12 @@ public class FixController {
         } catch (Exception e) {
             return ResponseEntity.unprocessableEntity().body(e.getMessage());
         }
-
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Object> deleteFix(@PathVariable String id) {
 
-        fixService.deleteDetail(id);
+        fixService.deleteFix(id);
 
         return ResponseEntity.noContent().build();
 

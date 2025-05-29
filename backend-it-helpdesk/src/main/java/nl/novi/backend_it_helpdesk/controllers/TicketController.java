@@ -4,7 +4,6 @@ import jakarta.validation.Valid;
 import nl.novi.backend_it_helpdesk.dtos.TicketInputDto;
 import nl.novi.backend_it_helpdesk.dtos.TicketOutputDto;
 import nl.novi.backend_it_helpdesk.enums.StatusTicketEnum;
-import nl.novi.backend_it_helpdesk.models.User;
 import nl.novi.backend_it_helpdesk.services.TicketService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -88,7 +87,7 @@ public class TicketController {
     }
 
     @PutMapping()
-    public ResponseEntity<Object> changeStatusTicket(@RequestParam String id, @Valid @RequestParam("status") StatusTicketEnum changeStatusTicket) {
+    public ResponseEntity<Object> changeStatusTicket(@RequestParam String id, @RequestParam("status") StatusTicketEnum changeStatusTicket) {
 
         TicketOutputDto outputDto = ticketService.changeStatusTicket(id, changeStatusTicket);
 

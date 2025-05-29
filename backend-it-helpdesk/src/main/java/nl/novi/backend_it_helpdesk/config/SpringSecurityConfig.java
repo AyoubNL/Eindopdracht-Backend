@@ -54,9 +54,9 @@ public class SpringSecurityConfig {
                 .cors(Customizer.withDefaults())
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(HttpMethod.POST, "/users").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/tickets", "/categories", "/details", "/fixes", "/screenshots/**").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/users", "/tickets", "/categories", "/details", "/fixes").hasAnyAuthority("manager","agent","client")
-                        .requestMatchers(HttpMethod.GET, "/users/*", "/tickets/*", "/categories/*", "/details/*", "/fixes/*", "/screenshots/**").hasAnyAuthority("manager","agent")
+                        .requestMatchers(HttpMethod.POST, "/tickets", "/categories", "/details", "/fixes", "/screenshots/**").authenticated()
+                        .requestMatchers(HttpMethod.GET, "/users", "/tickets", "/categories", "/details", "/fixes").hasAnyAuthority("manager")
+                        .requestMatchers(HttpMethod.GET, "/users/*", "/tickets/*", "/categories/*", "/details/*", "/fixes/*", "/screenshots/**").hasAnyAuthority("manager","agent", "client")
                         .requestMatchers(HttpMethod.PUT, "/users/**").hasAnyAuthority("manager")
                         .requestMatchers(HttpMethod.PUT, "/tickets/**", "/categories/*", "/details/*", "/fixes/*").hasAnyAuthority("manager", "agent","client")
                         .requestMatchers(HttpMethod.DELETE, "/users/*", "/tickets/*", "/categories/*", "/details/*", "/fixes/*").hasAuthority("manager")

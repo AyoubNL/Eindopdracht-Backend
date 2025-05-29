@@ -4,11 +4,12 @@ import jakarta.validation.Valid;
 import nl.novi.backend_it_helpdesk.dtos.TicketInputDto;
 import nl.novi.backend_it_helpdesk.dtos.TicketOutputDto;
 import nl.novi.backend_it_helpdesk.enums.StatusTicketEnum;
+import nl.novi.backend_it_helpdesk.exceptions.NotAuthorizedUserException;
 import nl.novi.backend_it_helpdesk.exceptions.RecordNotFoundException;
-import nl.novi.backend_it_helpdesk.exceptions.UsernameNotFoundException;
 import nl.novi.backend_it_helpdesk.mappers.*;
 import nl.novi.backend_it_helpdesk.models.Ticket;
 import nl.novi.backend_it_helpdesk.repositories.TicketRepository;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -86,19 +87,34 @@ public class TicketService {
 
     public void deleteTicket(String id) {
 
-        ticketRepository.deleteById(id);
+        if(ticketRepository.existsById(id.toUpperCase())) {
+
+            ticketRepository.deleteById(id.toUpperCase());
+        }
+        else{
+            throw new EmptyResultDataAccessException("Onbekende entiteit", 1);
+        }
 
     }
 
     public TicketOutputDto updateTicket(String id, @Valid TicketInputDto updateTicket) {
 
-        if (ticketRepository.findById(id).isPresent()) {
-            Ticket tk = ticketRepository.findById(id).get();
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String currentUser = authentication.getName();
+
+        if (ticketRepository.findById(id.toUpperCase()).isPresent()) {
+            Ticket tk = ticketRepository.findById(id.toUpperCase()).get();
             Ticket tk1 = transferToTicket(updateTicket);
 
             tk1.setId(tk.getId());
             tk1.setCreatedAt(tk.getCreatedAt());
-            tk1.setUser(tk.getUser());
+
+            if (currentUser.equals(tk.getUser())){
+                tk1.setUser(tk.getUser());
+            }
+            else{
+                throw new NotAuthorizedUserException("De gebruiker " + currentUser+ " is niet gemachtigd, om aanpassingen te doen aan " +id);}
+
 
             if (tk1.getCategory() != null) {
                 tk1.getCategory().setId(tk.getCategory().getId());
@@ -181,9 +197,8 @@ public class TicketService {
 
                 return transferToDto(tk);
             }
-            else{throw new UsernameNotFoundException("De gebruiker heeft geen rechten: " + id + " is ongemachtigd");}
-
-            //TO DO USER NOT AUTHORIZED
+            else{
+                throw new NotAuthorizedUserException("De gebruiker " + currentUser+ " is niet gemachtigd, om aanpassingen te doen aan " +id);}
 
         } else {
             throw new RecordNotFoundException("Het ticketnummer: " + id + " is onbekend");
