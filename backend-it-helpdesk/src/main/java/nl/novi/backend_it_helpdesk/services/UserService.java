@@ -4,6 +4,7 @@ import jakarta.validation.Valid;
 import nl.novi.backend_it_helpdesk.dtos.UserInputDto;
 import nl.novi.backend_it_helpdesk.dtos.UserOutputDto;
 import nl.novi.backend_it_helpdesk.exceptions.NotAuthorizedUserException;
+import nl.novi.backend_it_helpdesk.exceptions.RecordNotFoundException;
 import nl.novi.backend_it_helpdesk.exceptions.UsernameNotFoundException;
 import nl.novi.backend_it_helpdesk.mappers.UserMapper;
 import nl.novi.backend_it_helpdesk.models.Authority;
@@ -77,6 +78,7 @@ public class UserService {
 
     }
 
+
     public UserOutputDto updateUser(String username, @Valid UserInputDto updateUser) {
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -109,7 +111,7 @@ public class UserService {
                 return transferToDto(us1);
             }
             else{
-                throw new NotAuthorizedUserException("De gebruiker " + currentUser+ " is niet gemachtigd, om aanpassingen te doen aan " +username);}
+                throw new NotAuthorizedUserException("De gebruiker " + currentUser+ " is niet gemachtigd, om aanpassingen te doen aan " +username+".");}
 
 
         } else {

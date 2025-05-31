@@ -106,10 +106,6 @@ public class FixService {
             else{
                 throw new NotAuthorizedUserException("De gebruiker " + currentUser+ " is niet gemachtigd, om aanpassingen te doen aan " +id);}
 
-
-
-
-
         }
         throw new RecordNotFoundException("Het fixnummer:" + id + " is onbekend");
 

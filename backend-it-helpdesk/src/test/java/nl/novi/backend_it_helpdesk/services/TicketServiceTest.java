@@ -1,8 +1,7 @@
 package nl.novi.backend_it_helpdesk.services;
 
-import jakarta.validation.constraints.NotNull;
+import lombok.extern.slf4j.Slf4j;
 import nl.novi.backend_it_helpdesk.dtos.*;
-import nl.novi.backend_it_helpdesk.enums.StatusTicketEnum;
 import nl.novi.backend_it_helpdesk.exceptions.RecordNotFoundException;
 import nl.novi.backend_it_helpdesk.models.*;
 import nl.novi.backend_it_helpdesk.repositories.TicketRepository;
@@ -14,11 +13,14 @@ import org.mockito.*;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.mockito.junit.jupiter.MockitoSettings;
 import org.mockito.quality.Strictness;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.time.LocalDateTime;
 import java.util.*;
-import java.util.function.BooleanSupplier;
 
 import static nl.novi.backend_it_helpdesk.enums.PriorityTicketEnum.*;
 import static nl.novi.backend_it_helpdesk.enums.StatusTicketEnum.CLOSED;
@@ -29,6 +31,7 @@ import static nl.novi.backend_it_helpdesk.mappers.TicketMapper.transferToTicket;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
+@Slf4j
 @ExtendWith(MockitoExtension.class)
 @MockitoSettings(strictness = Strictness.LENIENT)
 class TicketServiceTest {
@@ -54,38 +57,50 @@ class TicketServiceTest {
     @BeforeEach
     void setUp() {
 
-        mockTickets = Arrays.asList((new Ticket(1L, LocalDateTime.now(), P1_ORGANIZATION, LocalDateTime.now().plusMinutes(60), new Category(1L, "Hardware", "Muis", List.of(new Ticket())), new Detail(1L, "Mijn muis kan ik niet verbinden met de laptop (Dell)", "Geen verbinding", MALFUNCTION, List.of(new Ticket())), new Fix(1L, "Maak opnieuw verbinding via bluetooth.", "Uitstekende oplossing", IN_PROGRESS), List.of(new Screenshot()), new User("Test01", "$2a$10$oh2jnssxP9pT/TcHPfhXb.au5/Fn1.7/AO.A1dRKA1jhunmuybd0.", MANAGER, "Test01@novi.nl", Set.of(new Authority("Test01", MANAGER)), List.of(new Ticket())))),
-                (new Ticket(2L, LocalDateTime.now(), P2_DEPARTEMENT, LocalDateTime.now().plusMinutes(45), new Category(2L, "Software", "Licentie", List.of(new Ticket())), new Detail(2L, "Licentie verlopen", "De licenties van ons Office pakket is bijna verlopen", QUESTION, List.of(new Ticket())), new Fix(2L, "De afdeling inkoop is bezig met een verlenging", "Wij kijken er naar uit!", IN_PROGRESS), List.of(new Screenshot()), new User("Test02", "$2a$10$.k.Ug5Pf7CGRf/QIw5zuy.BYCH17d5R.IlxHxS1r5SeZXgD6ptKRW", AGENT, "Test02@novi.nl", Set.of(new Authority("Test02", AGENT)), List.of(new Ticket())))),
-                (new Ticket(3L, LocalDateTime.now(), P3_TEAM, LocalDateTime.now().plusMinutes(30), new Category(3L, "Netwerk", "Internet", List.of(new Ticket())), new Detail(3L, "Internet traag", "Het hele bedrijf heeft soms last van trage internet", COMPLAINT, List.of(new Ticket())), new Fix(3L, "Er loopt een case bij onze ISP (KPN)", "Trage afhandeling", IN_PROGRESS), List.of(new Screenshot()), new User("Test03", "$2a$10$wMMChXMeYRqPSwSP/4Nns.CrFArfWhaBfswig.ljtEjbSvnd45gn6", CLIENT, "Test03@novi.nl", Set.of(new Authority("Test03", CLIENT)), List.of(new Ticket())))),
-                (new Ticket(4L, LocalDateTime.now(), P4_INDIVIDUAL, LocalDateTime.now().plusMinutes(30), new Category(4L, "Kantoor", "Bureaustoel", List.of(new Ticket())), new Detail(4L, "Bureaustoel stuk", "Mijn ergonomische bureaustoel is stuk", MALFUNCTION, List.of(new Ticket())), new Fix(4L, "Een nieuwe stoel besteld bij CoolBlue", "Helemaal top!", IN_PROGRESS), List.of(new Screenshot()), new User("Test04", "$2a$10$wMMChXMeYRqPSwSP/4Nns.CrFArfWhaBfswig.ljtEjbSvnd45gn7", CLIENT, "Test04@novi.nl", Set.of(new Authority("Test04", CLIENT)), List.of(new Ticket())))));
+        Authentication authentication = new UsernamePasswordAuthenticationToken(
+                "Test_Manager",
+                "geheim",
+                List.of(new SimpleGrantedAuthority("manager"))
+        );
 
-        ticketInputDto = new TicketInputDto(P4_INDIVIDUAL, new UserInputDto("Test04", "test04@novi.nl", AGENT, "Test04@novi.nl"), new CategoryInputDto("Kantoor", "Bureaustoel"), new DetailInputDto("Bureaustoel stuk", "Mijn ergonomische bureaustoel is stuk", MALFUNCTION), new FixInputDto("Een nieuwe stoel besteld bij CoolBlue", "Helemaal top!", IN_PROGRESS), List.of(new Screenshot()));
+        SecurityContextHolder.getContext().setAuthentication(authentication);
 
-        ticketInputDtoNull = new TicketInputDto(null, new CategoryInputDto(null, null), new FixInputDto(null, null, CLOSED), new DetailInputDto(null, null, null), new UserInputDto(null, null, null, null));
 
-        ticketInputDtoNullS = new TicketInputDto(null, new CategoryInputDto(null, null), new FixInputDto(null, null, null), new DetailInputDto(null, "Mijn ergonomische bureaustoel is stuk", null), new UserInputDto(null, null, null, "Test04@novi.nl"));
+        mockTickets = Arrays.asList((new Ticket("CASE00001", LocalDateTime.now(), P1_ORGANIZATION, LocalDateTime.now().plusMinutes(60), new Category("CASE00001", "Hardware", "Muis", List.of(new Ticket())), new Detail("CASE00001", "Mijn muis kan ik niet verbinden met de laptop (Dell)", "Geen verbinding", MALFUNCTION, List.of(new Ticket())), new Fix("CASE00001", "Maak opnieuw verbinding via bluetooth.", "Uitstekende oplossing", IN_PROGRESS), List.of(new Screenshot()), "Test_Manager")),
+                (new Ticket("CASE00002", LocalDateTime.now(), P2_DEPARTEMENT, LocalDateTime.now().plusMinutes(45), new Category("CASE00002", "Software", "Licentie", List.of(new Ticket())), new Detail("CASE00002", "Licentie verlopen", "De licenties van ons Office pakket is bijna verlopen", QUESTION, List.of(new Ticket())), new Fix("CASE00002", "De afdeling inkoop is bezig met een verlenging", "Wij kijken er naar uit!", IN_PROGRESS), List.of(new Screenshot()), "Test_Agent")),
+                (new Ticket("CASE00003", LocalDateTime.now(), P3_TEAM, LocalDateTime.now().plusMinutes(30), new Category("CASE00003", "Netwerk", "Internet", List.of(new Ticket())), new Detail("CASE00003", "Internet traag", "Het hele bedrijf heeft soms last van trage internet", COMPLAINT, List.of(new Ticket())), new Fix("CASE00003", "Er loopt een case bij onze ISP (KPN)", "Trage afhandeling", IN_PROGRESS), List.of(new Screenshot()), "Test_Client")),
+                (new Ticket("CASE00004", LocalDateTime.now(), P4_INDIVIDUAL, LocalDateTime.now().plusMinutes(30), new Category("CASE00004", "Kantoor", "Bureaustoel", List.of(new Ticket())), new Detail("CASE00004", "Bureaustoel stuk", "Mijn ergonomische bureaustoel is stuk", MALFUNCTION, List.of(new Ticket())), new Fix("CASE00004", "Een nieuwe stoel besteld bij CoolBlue", "Helemaal top!", IN_PROGRESS), List.of(new Screenshot()), "Test_Manager")));
+
+        ticketInputDto = new TicketInputDto(P4_INDIVIDUAL, new CategoryInputDto("Kantoor", "Bureaustoel"), new DetailInputDto("Bureaustoel stuk", "Mijn ergonomische bureaustoel is stuk", MALFUNCTION), new FixInputDto("Een nieuwe stoel besteld bij CoolBlue", "Helemaal top!", IN_PROGRESS), List.of(new Screenshot()));
+
+        ticketInputDtoNull = new TicketInputDto(null, new CategoryInputDto(null, null), new FixInputDto(null, null, CLOSED), new DetailInputDto(null, null, null));
+
+        ticketInputDtoNullS = new TicketInputDto(null, new CategoryInputDto(null, null), new FixInputDto(null, null, null), new DetailInputDto(null, "Mijn ergonomische bureaustoel is stuk", null));
 
         ticketInputDtoE = new TicketInputDto(P4_INDIVIDUAL, new FixInputDto("Een nieuwe stoel besteld bij CoolBlue", "Helemaal top!", IN_PROGRESS),new DetailInputDto("Bureaustoel stuk", "Mijn ergonomische bureaustoel is stuk", MALFUNCTION), new UserInputDto("Test04", "test04@novi.nl", AGENT, "Test04@novi.nl"));
 
         tk = new Ticket(1L, LocalDateTime.now(), P4_INDIVIDUAL, LocalDateTime.now().plusMinutes(30));
+
+
+
+
     }
 
     @Test
     @DisplayName("GetTicket")
     void testGetTicketById() {
         //arrange
-        when(ticketRepository.findById(2L)).thenReturn(Optional.of(mockTickets.get(1)));
+        when(ticketRepository.findById("CASE00002")).thenReturn(Optional.of(mockTickets.get(1)));
 
         //act
-        Optional<TicketOutputDto> result = Optional.ofNullable(ticketService.getTicketById(2L));
+        Optional<TicketOutputDto> result = Optional.ofNullable(ticketService.getTicketById("CASE00002"));
         //assert
         assertTrue(result.isPresent());
 
-        assertEquals(2L, result.get().getId());
-        assertEquals("Test02@novi.nl", result.get().getUser().getEmail());
+        assertEquals("CASE00002", result.get().getId());
         assertEquals("Software", result.get().getCategory().getCategoryName());
         assertEquals("Licentie", result.get().getCategory().getSubCategoryName());
-        assertEquals("Test02", result.get().getUser().getUsername());
+        assertEquals("Test_Agent", result.get().getUser());
         assertEquals(P2_DEPARTEMENT, result.get().getPriority());
 
     }
@@ -95,9 +110,9 @@ class TicketServiceTest {
     void testGetTicketByIdNotNull() {
 
         //arrange
-        when(ticketRepository.findById(1L)).thenReturn(Optional.ofNullable(tk));
+        when(ticketRepository.findById("CASE00001")).thenReturn(Optional.ofNullable(tk));
         //act
-        Optional<TicketOutputDto> result = Optional.ofNullable(ticketService.getTicketById(1L));
+        Optional<TicketOutputDto> result = Optional.ofNullable(ticketService.getTicketById("CASE00001"));
         //assert
         assertNull(result.get().getCategory());
         assertNull(result.get().getFix());
@@ -120,24 +135,26 @@ class TicketServiceTest {
         List<TicketOutputDto> result = ticketService.getAllTickets();
         //assert
         assertEquals(4, result.size());
-        assertEquals(1L, result.get(0).getId());
-        assertEquals(2L, result.get(1).getId());
-        assertEquals(3L, result.get(2).getId());
+        assertEquals("CASE00001", result.get(0).getId());
+        assertEquals("CASE00002", result.get(1).getId());
+        assertEquals("CASE00003", result.get(2).getId());
         assertEquals(P1_ORGANIZATION, result.get(0).getPriority());
         assertEquals(P2_DEPARTEMENT, result.get(1).getPriority());
         assertEquals(P3_TEAM, result.get(2).getPriority());
-        assertEquals("Test01@novi.nl", result.get(0).getUser().getEmail());
-        assertEquals("Test02@novi.nl", result.get(1).getUser().getEmail());
-        assertEquals("Test03@novi.nl", result.get(2).getUser().getEmail());
+        assertEquals("Test_Manager", result.get(0).getUser());
+        assertEquals("Test_Agent", result.get(1).getUser());
+        assertEquals("Test_Client", result.get(2).getUser());
     }
 
     @Test
     @DisplayName("DeleteTickets")
     void testDeleteTicket() {
 
-        ticketService.deleteTicket(2L);
+        when(ticketRepository.existsById("CASE00002")).thenReturn(true);
 
-        verify(ticketRepository).deleteById(2L);
+        ticketService.deleteTicket("CASE00002");
+
+        verify(ticketRepository).deleteById("CASE00002");
 
     }
 
@@ -157,9 +174,9 @@ class TicketServiceTest {
     @DisplayName("UpdateTicket")
     void testUpdateTicket() {
 
-        when(ticketRepository.findById(2L)).thenReturn(Optional.of(mockTickets.get(3)));
+        when(ticketRepository.findById("CASE00004")).thenReturn(Optional.of(mockTickets.get(3)));
 
-        ticketService.updateTicket(2L, ticketInputDto);
+        ticketService.updateTicket("CASE00004", ticketInputDto);
 
         verify(ticketRepository, times(1)).save(captor.capture());
 
@@ -179,9 +196,9 @@ class TicketServiceTest {
     @DisplayName("UpdateTicketNull")
     void testUpdateTicketNull() {
 
-        when(ticketRepository.findById(2L)).thenReturn(Optional.ofNullable(mockTickets.get(3)));
+        when(ticketRepository.findById("CASE00002")).thenReturn(Optional.ofNullable(mockTickets.get(3)));
 
-        ticketService.updateTicket(2L, ticketInputDtoNull);
+        ticketService.updateTicket("CASE00002", ticketInputDtoNull);
 
         verify(ticketRepository, times(1)).save(captor.capture());
 
@@ -195,10 +212,7 @@ class TicketServiceTest {
         assertNull(tk1.getDetail().getTitle());
         assertNull(tk1.getDetail().getDescription());
         assertNull(tk1.getDetail().getType());
-        assertNotNull(tk1.getUser());
-        assertNull(tk1.getUser().getUsername());
-        assertNull(tk1.getUser().getEmail());
-        assertNull(tk1.getUser().getPassword());
+        assertNull(tk1.getUser());
         assertNotNull(tk1.getFix());
         assertNull(tk1.getFix().getFeedback());
         assertNull(tk1.getFix().getSolution());
@@ -209,14 +223,10 @@ class TicketServiceTest {
     @DisplayName("UpdateTicketNullS")
     void testUpdateTicketNullS() {
 
-        when(ticketRepository.findById(2L)).thenReturn(Optional.ofNullable(mockTickets.get(3)));
-
-        ticketService.updateTicket(2L, ticketInputDtoNullS);
-
+        when(ticketRepository.findById("CASE00002")).thenReturn(Optional.ofNullable(mockTickets.get(3)));
+        ticketService.updateTicket("CASE00002", ticketInputDtoNullS);
         verify(ticketRepository, times(1)).save(captor.capture());
-
         Ticket tk1 = transferToTicket(ticketInputDtoNullS);
-
         assertNull(tk1.getFix().getStatus());
     }
 
@@ -224,25 +234,18 @@ class TicketServiceTest {
     @DisplayName("UpdateTicketEmpty")
     void testUpdateTicketE() {
 
-        when(ticketRepository.findById(2L)).thenReturn(Optional.of(mockTickets.get(3)));
-
-        ticketService.updateTicket(2L, ticketInputDtoE);
-
+        when(ticketRepository.findById("CASE00002")).thenReturn(Optional.of(mockTickets.get(3)));
+        ticketService.updateTicket("CASE00002", ticketInputDtoE);
         verify(ticketRepository, times(1)).save(captor.capture());
-
         Ticket captured = captor.getValue();
-
         assertEquals(mockTickets.get(3).getCategory(), captured.getCategory());
 
-
     }
-
-
 
     @Test
     @DisplayName("throwExceptionUpdateTicket")
     void testUpdateTicketThrowsException() {
-        assertThrows(RecordNotFoundException.class, () -> ticketService.updateTicket(null, ticketInputDto));
+        assertThrows(RecordNotFoundException.class, () -> ticketService.updateTicket("CASE00009", ticketInputDto));
     }
 
     @Test
@@ -255,7 +258,6 @@ class TicketServiceTest {
 
         Ticket captured = captor.getValue();
 
-        captor.getValue().getUser().setPassword(passwordEncoder.encode(ticketInputDto.getUser().getPassword()));
         assertEquals(mockTickets.get(3).getPriority(), captured.getPriority());
         assertEquals(mockTickets.get(3).getCategory().getCategoryName(), captured.getCategory().getCategoryName());
         assertEquals(mockTickets.get(3).getCategory().getSubCategoryName(), captured.getCategory().getSubCategoryName());
