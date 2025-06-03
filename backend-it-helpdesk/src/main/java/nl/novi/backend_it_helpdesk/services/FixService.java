@@ -57,7 +57,7 @@ public class FixService {
 
     }
 
-    public FixOutputDto addFix(@Valid FixInputDto fix) {
+    public FixOutputDto addFix(FixInputDto fix) {
 
         Fix fx = FixMapper.transferToFix(fix);
         fixRepository.save(fx);
@@ -77,7 +77,7 @@ public class FixService {
 
     }
 
-    public FixOutputDto updateFix(String id, @Valid FixInputDto updateFix) {
+    public FixOutputDto updateFix(String id, FixInputDto updateFix) {
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String currentUser = authentication.getName();

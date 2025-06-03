@@ -18,6 +18,7 @@ public class UserInputDto {
     @Size(min=1, max=8, message = "Username too long (max 8 characters)")
     private String username;
     @Size(min=1, max=60, message = "Password too long (max 60 characters)")
+    @NotNull(message = "Password is required")
     private String password;
     private UserRoleEnum role;
     @Email(message = "Please enter a valid email Id")

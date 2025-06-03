@@ -16,7 +16,7 @@ VALUES ('Test_Manager', '$2a$10$oh2jnssxP9pT/TcHPfhXb.au5/Fn1.7/AO.A1dRKA1jhunmu
 INSERT INTO fixes(id, solution, feedback, status)
 VALUES ('CASE00001', 'Maak opnieuw verbinding via bluetooth.', 'Uitstekende oplossing!', 'IN_PROGRESS'),
        ('CASE00002', 'De afdeling inkoop is bezig met een verlenging', 'Wij kijken er naar uit!', 'IN_PROGRESS'),
-       ('CASE00003', 'Er loopt een case bij onze ISP (KPN)', 'Trage afhandeling', 'IN_PROGRESS');
+       ('CASE00003', 'Er loopt een case bij onze ISP (KPN)', 'Trage afhandeling', 'REJECTED');
 
 INSERT INTO tickets(ID, CATEGORY_ID, CLOSED_AT, CREATED_AT, DETAIL_ID, FIX_ID, PRIORITY, USER_ID)
 VALUES ('CASE00001', 'CASE00001', null, current_timestamp, 'CASE00001', 'CASE00001', 'P4_INDIVIDUAL', 'Test_Manager'),

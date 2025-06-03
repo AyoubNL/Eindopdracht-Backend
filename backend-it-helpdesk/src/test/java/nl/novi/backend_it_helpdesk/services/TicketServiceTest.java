@@ -2,6 +2,7 @@ package nl.novi.backend_it_helpdesk.services;
 
 import lombok.extern.slf4j.Slf4j;
 import nl.novi.backend_it_helpdesk.dtos.*;
+import nl.novi.backend_it_helpdesk.exceptions.NotAuthorizedUserException;
 import nl.novi.backend_it_helpdesk.exceptions.RecordNotFoundException;
 import nl.novi.backend_it_helpdesk.models.*;
 import nl.novi.backend_it_helpdesk.repositories.TicketRepository;
@@ -13,18 +14,17 @@ import org.mockito.*;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.mockito.junit.jupiter.MockitoSettings;
 import org.mockito.quality.Strictness;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.time.LocalDateTime;
 import java.util.*;
 
 import static nl.novi.backend_it_helpdesk.enums.PriorityTicketEnum.*;
-import static nl.novi.backend_it_helpdesk.enums.StatusTicketEnum.CLOSED;
-import static nl.novi.backend_it_helpdesk.enums.StatusTicketEnum.IN_PROGRESS;
+import static nl.novi.backend_it_helpdesk.enums.StatusTicketEnum.*;
 import static nl.novi.backend_it_helpdesk.enums.TypeTicketEnum.*;
 import static nl.novi.backend_it_helpdesk.enums.UserRoleEnum.*;
 import static nl.novi.backend_it_helpdesk.mappers.TicketMapper.transferToTicket;
@@ -43,9 +43,6 @@ class TicketServiceTest {
 
     @Captor
     ArgumentCaptor<Ticket> captor;
-
-    @Mock
-    PasswordEncoder passwordEncoder;
 
     List<Ticket> mockTickets = new ArrayList<>();
     TicketInputDto ticketInputDto;
@@ -69,7 +66,7 @@ class TicketServiceTest {
         mockTickets = Arrays.asList((new Ticket("CASE00001", LocalDateTime.now(), P1_ORGANIZATION, LocalDateTime.now().plusMinutes(60), new Category("CASE00001", "Hardware", "Muis", List.of(new Ticket())), new Detail("CASE00001", "Mijn muis kan ik niet verbinden met de laptop (Dell)", "Geen verbinding", MALFUNCTION, List.of(new Ticket())), new Fix("CASE00001", "Maak opnieuw verbinding via bluetooth.", "Uitstekende oplossing", IN_PROGRESS), List.of(new Screenshot()), "Test_Manager")),
                 (new Ticket("CASE00002", LocalDateTime.now(), P2_DEPARTEMENT, LocalDateTime.now().plusMinutes(45), new Category("CASE00002", "Software", "Licentie", List.of(new Ticket())), new Detail("CASE00002", "Licentie verlopen", "De licenties van ons Office pakket is bijna verlopen", QUESTION, List.of(new Ticket())), new Fix("CASE00002", "De afdeling inkoop is bezig met een verlenging", "Wij kijken er naar uit!", IN_PROGRESS), List.of(new Screenshot()), "Test_Agent")),
                 (new Ticket("CASE00003", LocalDateTime.now(), P3_TEAM, LocalDateTime.now().plusMinutes(30), new Category("CASE00003", "Netwerk", "Internet", List.of(new Ticket())), new Detail("CASE00003", "Internet traag", "Het hele bedrijf heeft soms last van trage internet", COMPLAINT, List.of(new Ticket())), new Fix("CASE00003", "Er loopt een case bij onze ISP (KPN)", "Trage afhandeling", IN_PROGRESS), List.of(new Screenshot()), "Test_Client")),
-                (new Ticket("CASE00004", LocalDateTime.now(), P4_INDIVIDUAL, LocalDateTime.now().plusMinutes(30), new Category("CASE00004", "Kantoor", "Bureaustoel", List.of(new Ticket())), new Detail("CASE00004", "Bureaustoel stuk", "Mijn ergonomische bureaustoel is stuk", MALFUNCTION, List.of(new Ticket())), new Fix("CASE00004", "Een nieuwe stoel besteld bij CoolBlue", "Helemaal top!", IN_PROGRESS), List.of(new Screenshot()), "Test_Manager")));
+                (new Ticket("CASE00004", LocalDateTime.now(), P4_INDIVIDUAL, LocalDateTime.now().plusMinutes(30), new Category("CASE00004", "Kantoor", "Bureaustoel", List.of(new Ticket())), new Detail("CASE00004", "Bureaustoel stuk", "Mijn ergonomische bureaustoel is stuk", MALFUNCTION, List.of(new Ticket())), new Fix("CASE00004", "Een nieuwe stoel besteld bij CoolBlue", "Helemaal top!", REJECTED), List.of(new Screenshot()), "Test_Manager")));
 
         ticketInputDto = new TicketInputDto(P4_INDIVIDUAL, new CategoryInputDto("Kantoor", "Bureaustoel"), new DetailInputDto("Bureaustoel stuk", "Mijn ergonomische bureaustoel is stuk", MALFUNCTION), new FixInputDto("Een nieuwe stoel besteld bij CoolBlue", "Helemaal top!", IN_PROGRESS), List.of(new Screenshot()));
 
@@ -77,12 +74,9 @@ class TicketServiceTest {
 
         ticketInputDtoNullS = new TicketInputDto(null, new CategoryInputDto(null, null), new FixInputDto(null, null, null), new DetailInputDto(null, "Mijn ergonomische bureaustoel is stuk", null));
 
-        ticketInputDtoE = new TicketInputDto(P4_INDIVIDUAL, new FixInputDto("Een nieuwe stoel besteld bij CoolBlue", "Helemaal top!", IN_PROGRESS),new DetailInputDto("Bureaustoel stuk", "Mijn ergonomische bureaustoel is stuk", MALFUNCTION), new UserInputDto("Test04", "test04@novi.nl", AGENT, "Test04@novi.nl"));
+        ticketInputDtoE = new TicketInputDto(P4_INDIVIDUAL, new FixInputDto("Een nieuwe stoel besteld bij CoolBlue", "Helemaal top!", IN_PROGRESS), new DetailInputDto("Bureaustoel stuk", "Mijn ergonomische bureaustoel is stuk", MALFUNCTION), new UserInputDto("Test04", "test04@novi.nl", AGENT, "Test04@novi.nl"));
 
         tk = new Ticket(1L, LocalDateTime.now(), P4_INDIVIDUAL, LocalDateTime.now().plusMinutes(30));
-
-
-
 
     }
 
@@ -159,6 +153,12 @@ class TicketServiceTest {
     }
 
     @Test
+    @DisplayName("throwExceptionDeleteTicket")
+    void testDeleteTicketThrowsException() {
+        assertThrows(EmptyResultDataAccessException.class, () -> ticketService.deleteTicket("Test_X"));
+    }
+
+    @Test
     @DisplayName("GetAllTicketsByUser")
     void testGetAllTicketsByUser() {
 
@@ -167,6 +167,89 @@ class TicketServiceTest {
         List<TicketOutputDto> result = ticketService.getAllTicketsByUser(mockTickets.get(2).getUser());
 
         assertEquals(4, result.size());
+
+    }
+
+    @Test
+    @DisplayName("GetAllTicketsByPriorityC1")
+    void testGetAllTicketsByPriorityC1() {
+
+        //arrange
+        when(ticketRepository.findAllByPriority(P1_ORGANIZATION)).thenReturn(mockTickets);
+
+        //act
+        List<TicketOutputDto> result = ticketService.getAllTicketsByPriority("P1");
+
+        //assert
+        assertEquals(P1_ORGANIZATION, result.get(0).getPriority());
+        verify(ticketRepository).findAllByPriority(P1_ORGANIZATION);
+        ;
+    }
+
+    @Test
+    @DisplayName("GetAllTicketsByPriorityC2")
+    void testGetAllTicketsByPriorityC2() {
+
+        //arrange
+        when(ticketRepository.findAllByPriority(P2_DEPARTEMENT)).thenReturn(mockTickets);
+
+        //act
+        List<TicketOutputDto> result = ticketService.getAllTicketsByPriority("P2");
+
+        verify(ticketRepository).findAllByPriority(P2_DEPARTEMENT);
+
+        //assert
+        assertEquals(P2_DEPARTEMENT, result.get(1).getPriority());
+
+    }
+
+    @Test
+    @DisplayName("GetAllTicketsByPriorityC2")
+    void testGetAllTicketsByPriorityC3() {
+
+        //arrange
+        when(ticketRepository.findAllByPriority(P3_TEAM)).thenReturn(mockTickets);
+
+        //act
+        List<TicketOutputDto> result = ticketService.getAllTicketsByPriority("P3");
+
+        //assert
+        assertEquals(P3_TEAM, result.get(2).getPriority());
+        verify(ticketRepository).findAllByPriority(P3_TEAM);
+
+    }
+
+    @Test
+    @DisplayName("GetAllTicketsByPriorityC4")
+    void testGetAllTicketsByPriorityC4() {
+
+        //arrange
+        when(ticketRepository.findAllByPriority(P4_INDIVIDUAL)).thenReturn(mockTickets);
+
+        //act
+        List<TicketOutputDto> result = ticketService.getAllTicketsByPriority("P4");
+
+        //assert
+        assertEquals(P4_INDIVIDUAL, result.get(3).getPriority());
+        verify(ticketRepository).findAllByPriority(P4_INDIVIDUAL);
+
+    }
+
+    @Test
+    @DisplayName("throwExceptionGetAllTicketsByPriority")
+    void testGetAllTicketsByPriorityThrowsException() {
+        assertThrows(IllegalArgumentException.class, () -> ticketService.getAllTicketsByPriority("P5"));
+    }
+
+    @Test
+    @DisplayName("getAllTicketsByRejected")
+    void testGetAllTicketsByRejected() {
+
+        when(ticketRepository.findAll()).thenReturn(mockTickets);
+
+        List<TicketOutputDto> result = ticketService.getAllTicketsByRejected();
+
+        assertEquals(REJECTED, result.getFirst().getFix().getStatus());
 
     }
 
@@ -189,6 +272,26 @@ class TicketServiceTest {
         assertEquals(mockTickets.get(3).getDetail().getTitle(), captured.getDetail().getTitle());
         assertEquals(mockTickets.get(3).getDetail().getDescription(), captured.getDetail().getDescription());
         assertEquals(mockTickets.get(3).getDetail().getType(), captured.getDetail().getType());
+
+    }
+
+    @Test
+    @DisplayName("UpdateTicketAuthThrowsException")
+    void testUpdateTicketAuthThrowsException() {
+
+        Authentication authentication = new UsernamePasswordAuthenticationToken(
+                "Test_Manager",
+                "geheim",
+                List.of(new SimpleGrantedAuthority("manager"))
+        );
+
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+
+        when(ticketRepository.existsById("CASE00003")).thenReturn(true);
+
+        when(ticketRepository.findById("CASE00003")).thenReturn(Optional.of(mockTickets.get(2)));
+
+        assertThrows(NotAuthorizedUserException.class, () -> ticketService.updateTicket("CASE00003", ticketInputDto));
 
     }
 
@@ -262,7 +365,47 @@ class TicketServiceTest {
         assertEquals(mockTickets.get(3).getCategory().getCategoryName(), captured.getCategory().getCategoryName());
         assertEquals(mockTickets.get(3).getCategory().getSubCategoryName(), captured.getCategory().getSubCategoryName());
 
+    }
+
+    @Test
+    @DisplayName("changeStatusTicket")
+    void testChangeStatusTicket() {
+
+        when(ticketRepository.findById("CASE00004")).thenReturn(Optional.of(mockTickets.get(3)));
+
+        ticketService.changeStatusTicket("CASE00004", CLOSED);
+
+        verify(ticketRepository, times(1)).save(captor.capture());
+
+        Ticket captured = captor.getValue();
+
+        assertEquals("CLOSED", captured.getFix().getStatus().toString());
+        assertEquals(LocalDateTime.now().getHour(), captured.getClosedAt().getHour());
 
     }
+
+    @Test
+    @DisplayName("throwExceptionChangeStatusTicket")
+    void testChangeStatusTicketThrowsException() {
+        assertThrows(RecordNotFoundException.class, () -> ticketService.changeStatusTicket(null, CLOSED));
+    }
+
+    @Test
+    @DisplayName("ChangeStatusTicketAuthThrowsException")
+    void testChangeStatusTicketAuthThrowsException() {
+
+        Authentication authentication = new UsernamePasswordAuthenticationToken(
+                "Test_Manager",
+                "geheim",
+                List.of(new SimpleGrantedAuthority("manager"))
+        );
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+
+        when(ticketRepository.findById("CASE00003")).thenReturn(Optional.of(mockTickets.get(2)));
+
+        assertThrows(NotAuthorizedUserException.class, () -> ticketService.changeStatusTicket("CASE00003", CLOSED));
+
+    }
+
 
 }

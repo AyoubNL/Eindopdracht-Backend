@@ -5,11 +5,15 @@ import nl.novi.backend_it_helpdesk.dtos.TicketInputDto;
 import nl.novi.backend_it_helpdesk.dtos.TicketOutputDto;
 import nl.novi.backend_it_helpdesk.enums.StatusTicketEnum;
 import nl.novi.backend_it_helpdesk.services.TicketService;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -39,11 +43,27 @@ public class TicketController {
 
         if (user.isEmpty()) {
             dtos = ticketService.getAllTickets();
-        }
-
-        else{
+        } else {
             dtos = ticketService.getAllTicketsByUser(user.get());
         }
+
+        return ResponseEntity.ok().body(dtos);
+
+    }
+
+    @GetMapping("/priority/{priority}")
+    public ResponseEntity<List<TicketOutputDto>> getAllTicketsByPriority(@PathVariable("priority") String priorityTicketEnum ) {
+
+        List<TicketOutputDto> dtos = ticketService.getAllTicketsByPriority(priorityTicketEnum);
+
+        return ResponseEntity.ok().body(dtos);
+
+    }
+
+    @GetMapping("/rejected")
+    public ResponseEntity<List<TicketOutputDto>> getAllTicketsByRejected() {
+
+        List<TicketOutputDto> dtos = ticketService.getAllTicketsByRejected();
 
         return ResponseEntity.ok().body(dtos);
 
@@ -52,18 +72,16 @@ public class TicketController {
     @PostMapping()
     public ResponseEntity<Object> addTicket(@Valid @RequestBody TicketInputDto ticket) {
 
-        try{
-        TicketOutputDto dto = ticketService.addTicket(ticket);
+        try {
+            TicketOutputDto dto = ticketService.addTicket(ticket);
 
-        URI uri = ServletUriComponentsBuilder
-                .fromCurrentRequest()
-                .path("/" + dto.getId())
-                .buildAndExpand(dto.getId()).toUri();
+            URI uri = ServletUriComponentsBuilder
+                    .fromCurrentRequest()
+                    .path("/" + dto.getId())
+                    .buildAndExpand(dto.getId()).toUri();
 
-        return ResponseEntity.created(uri).body(dto);
-        }
-
-        catch(Exception e){
+            return ResponseEntity.created(uri).body(dto);
+        } catch (Exception e) {
             return ResponseEntity.unprocessableEntity().body(e.getMessage());
         }
 
@@ -95,8 +113,6 @@ public class TicketController {
 
 
     }
-
-
 
 
 }

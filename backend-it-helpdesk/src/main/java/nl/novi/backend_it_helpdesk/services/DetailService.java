@@ -77,7 +77,7 @@ public class DetailService {
 
     }
 
-    public DetailOutputDto updateDetail(String id, @Valid DetailInputDto updateDetail) {
+    public DetailOutputDto updateDetail(String id, DetailInputDto updateDetail) {
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String currentUser = authentication.getName();

@@ -1,10 +1,8 @@
 package nl.novi.backend_it_helpdesk.services;
 
-import jakarta.validation.Valid;
 import nl.novi.backend_it_helpdesk.dtos.UserInputDto;
 import nl.novi.backend_it_helpdesk.dtos.UserOutputDto;
 import nl.novi.backend_it_helpdesk.exceptions.NotAuthorizedUserException;
-import nl.novi.backend_it_helpdesk.exceptions.RecordNotFoundException;
 import nl.novi.backend_it_helpdesk.exceptions.UsernameNotFoundException;
 import nl.novi.backend_it_helpdesk.mappers.UserMapper;
 import nl.novi.backend_it_helpdesk.models.Authority;
@@ -54,7 +52,7 @@ public class UserService {
 
     }
 
-    public UserOutputDto addUser(@Valid UserInputDto dto){
+    public UserOutputDto addUser(UserInputDto dto){
 
         dto.setPassword(passwordEncoder.encode(dto.getPassword()));
         User ur = UserMapper.transferToUser(dto);
@@ -78,8 +76,7 @@ public class UserService {
 
     }
 
-
-    public UserOutputDto updateUser(String username, @Valid UserInputDto updateUser) {
+    public UserOutputDto updateUser(String username, UserInputDto updateUser) {
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String currentUser = authentication.getName();

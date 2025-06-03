@@ -1,8 +1,8 @@
 package nl.novi.backend_it_helpdesk.services;
 
-import jakarta.validation.Valid;
 import nl.novi.backend_it_helpdesk.dtos.TicketInputDto;
 import nl.novi.backend_it_helpdesk.dtos.TicketOutputDto;
+import nl.novi.backend_it_helpdesk.enums.PriorityTicketEnum;
 import nl.novi.backend_it_helpdesk.enums.StatusTicketEnum;
 import nl.novi.backend_it_helpdesk.exceptions.NotAuthorizedUserException;
 import nl.novi.backend_it_helpdesk.exceptions.RecordNotFoundException;
@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import static nl.novi.backend_it_helpdesk.enums.StatusTicketEnum.REJECTED;
 import static nl.novi.backend_it_helpdesk.mappers.TicketMapper.*;
 
 @Service
@@ -72,6 +73,39 @@ public class TicketService {
         return transferTicketListToDtoList(ticketList);
     }
 
+    public List<TicketOutputDto> getAllTicketsByPriority(String priorityTicketEnum) {
+
+        switch (priorityTicketEnum.toUpperCase()) {
+
+            case "P1":
+                List<Ticket> ticketListP1 = ticketRepository.findAllByPriority(PriorityTicketEnum.P1_ORGANIZATION);
+                return transferTicketListToDtoList(ticketListP1);
+            case "P2":
+                List<Ticket> ticketListP2 = ticketRepository.findAllByPriority(PriorityTicketEnum.P2_DEPARTEMENT);
+                return transferTicketListToDtoList(ticketListP2);
+            case "P3":
+                List<Ticket> ticketListP3 = ticketRepository.findAllByPriority(PriorityTicketEnum.P3_TEAM);
+                return transferTicketListToDtoList(ticketListP3);
+            case "P4":
+                List<Ticket> ticketListP4 = ticketRepository.findAllByPriority(PriorityTicketEnum.P4_INDIVIDUAL);
+                return transferTicketListToDtoList(ticketListP4);
+            default:
+                throw new IllegalArgumentException("De volgende prioriteit is onbekend: " + priorityTicketEnum);
+        }
+
+
+    }
+
+    public List<TicketOutputDto> getAllTicketsByRejected() {
+
+        List<Ticket> ticketList = ticketRepository.findAll();
+
+        List<Ticket> newList = ticketList.stream().filter(a -> a.getFix().getStatus() == REJECTED).toList();
+
+        return transferTicketListToDtoList(newList);
+
+    }
+
     public TicketOutputDto addTicket(TicketInputDto dto) {
 
         Ticket tk = transferToTicket(dto);
@@ -87,17 +121,16 @@ public class TicketService {
 
     public void deleteTicket(String id) {
 
-        if(ticketRepository.existsById(id.toUpperCase())) {
+        if (ticketRepository.existsById(id.toUpperCase())) {
 
             ticketRepository.deleteById(id.toUpperCase());
-        }
-        else{
+        } else {
             throw new EmptyResultDataAccessException("Onbekende entiteit", 1);
         }
 
     }
 
-    public TicketOutputDto updateTicket(String id, @Valid TicketInputDto updateTicket) {
+    public TicketOutputDto updateTicket(String id, TicketInputDto updateTicket) {
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String currentUser = authentication.getName();
@@ -109,12 +142,11 @@ public class TicketService {
             tk1.setId(tk.getId());
             tk1.setCreatedAt(tk.getCreatedAt());
 
-            if (currentUser.equals(tk.getUser())){
+            if (currentUser.equals(tk.getUser())) {
                 tk1.setUser(tk.getUser());
+            } else {
+                throw new NotAuthorizedUserException("De gebruiker " + currentUser + " is niet gemachtigd, om aanpassingen te doen aan " + id);
             }
-            else{
-                throw new NotAuthorizedUserException("De gebruiker " + currentUser+ " is niet gemachtigd, om aanpassingen te doen aan " +id);}
-
 
             if (tk1.getCategory() != null) {
                 tk1.getCategory().setId(tk.getCategory().getId());
@@ -180,31 +212,36 @@ public class TicketService {
 
     }
 
-    public TicketOutputDto changeStatusTicket(String id, @Valid StatusTicketEnum changeStatusTicket) {
+    public TicketOutputDto changeStatusTicket(String id, StatusTicketEnum changeStatusTicket) {
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-
         String currentUser = authentication.getName();
 
         if (ticketRepository.findById(id).isPresent()) {
             Ticket tk = ticketRepository.findById(id).get();
 
-            if (currentUser.equals(tk.getUser())){
+            if (currentUser.equals(tk.getUser())) {
                 tk.getFix().setStatus(changeStatusTicket);
-                tk.setClosedAt(LocalDateTime.now());
+
+                if (changeStatusTicket == StatusTicketEnum.CLOSED) {
+
+                    tk.setClosedAt(LocalDateTime.now());
+
+                }
 
                 ticketRepository.save(tk);
 
                 return transferToDto(tk);
+            } else {
+                throw new NotAuthorizedUserException("De gebruiker " + currentUser + " is niet gemachtigd, om aanpassingen te doen aan " + id);
             }
-            else{
-                throw new NotAuthorizedUserException("De gebruiker " + currentUser+ " is niet gemachtigd, om aanpassingen te doen aan " +id);}
 
         } else {
             throw new RecordNotFoundException("Het ticketnummer: " + id + " is onbekend");
         }
 
-
     }
+
+
 }
 

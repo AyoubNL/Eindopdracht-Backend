@@ -1,10 +1,7 @@
 package nl.novi.backend_it_helpdesk.dtos;
 
 import jakarta.validation.Valid;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import nl.novi.backend_it_helpdesk.enums.PriorityTicketEnum;
 import nl.novi.backend_it_helpdesk.models.*;
 
@@ -15,7 +12,6 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-
 public class TicketInputDto {
 
     private PriorityTicketEnum priority;

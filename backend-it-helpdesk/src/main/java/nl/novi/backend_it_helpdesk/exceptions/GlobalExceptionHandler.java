@@ -27,7 +27,7 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(NotAuthorizedUserException.class)
-    public ResponseEntity<ErrorDto> handleNotauthorizedUserException(NotAuthorizedUserException ex) {
+    public ResponseEntity<ErrorDto> handleNotAuthorizedUserException(NotAuthorizedUserException ex) {
         log.error("Onbevoegd", ex);
 
         ErrorDto errorDto = new ErrorDto("Onbevoegd", ex.getMessage(), LocalDateTime.now(), HttpStatus.UNAUTHORIZED.value());
@@ -74,7 +74,6 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(errors, HttpStatus.BAD_REQUEST);
     }
 
-
     @ExceptionHandler(EmptyResultDataAccessException.class)
     public ResponseEntity<ErrorDto> handleEmptyResultDataAccessException(EmptyResultDataAccessException ex) {
         log.error("Onbekende entiteit", ex);
@@ -82,5 +81,17 @@ public class GlobalExceptionHandler {
         ErrorDto errorDto = new ErrorDto("Onbekende entiteit", ex.getMessage(), LocalDateTime.now(), HttpStatus.NOT_FOUND.value());
         return new ResponseEntity<>(errorDto, HttpStatus.NOT_FOUND);
     }
+
+    @ExceptionHandler(MissingServletRequestParameterException.class)
+    public ResponseEntity<ErrorDto> handleMissingServletRequestParameterException(MissingServletRequestParameterException ex) {
+        log.error("De parameter ontbreekt", ex);
+
+        ErrorDto errorDto = new ErrorDto("De parameter ontbreekt", ex.getMessage(), LocalDateTime.now(), HttpStatus.BAD_REQUEST.value());
+        return new ResponseEntity<>(errorDto, HttpStatus.BAD_REQUEST);
+    }
+
+
+
+
 
 }
