@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import nl.novi.backend_it_helpdesk.config.CaId;
 import nl.novi.backend_it_helpdesk.enums.StatusTicketEnum;
 
 @Entity
@@ -16,8 +17,8 @@ import nl.novi.backend_it_helpdesk.enums.StatusTicketEnum;
 public class Fix {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @CaId
+    private String id;
     private String solution;
     private String feedback;
     @Enumerated(EnumType.STRING)

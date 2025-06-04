@@ -1,5 +1,6 @@
 package nl.novi.backend_it_helpdesk.integration;
 
+import jakarta.transaction.Transactional;
 import nl.novi.backend_it_helpdesk.models.*;
 import nl.novi.backend_it_helpdesk.repositories.TicketRepository;
 import org.junit.jupiter.api.AfterEach;
@@ -25,6 +26,7 @@ import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.transaction.annotation.Propagation.NOT_SUPPORTED;
 
 
 @SpringBootTest
@@ -42,12 +44,14 @@ public class TicketControllerIntegrationTests {
 
     @BeforeEach
     void setUp() {
+
+
         ticketRepository.deleteAll();
 
         List<Ticket> testTickets = List.of(
-                new Ticket(null, LocalDateTime.now(), P1_ORGANIZATION, LocalDateTime.now().plusMinutes(60), new Category(null, "Hardware", "Muis", List.of(new Ticket())), new Detail(null, "Mijn muis kan ik niet verbinden met de laptop (Dell)", "Geen verbinding", MALFUNCTION, List.of(new Ticket())), new Fix(null, "Maak opnieuw verbinding via bluetooth.", "Uitstekende oplossing", IN_PROGRESS), List.of(new Screenshot()), new User("Test01", "$2a$10$oh2jnssxP9pT/TcHPfhXb.au5/Fn1.7/AO.A1dRKA1jhunmuybd0.", MANAGER, "Test01@novi.nl", Set.of(new Authority("Test01", MANAGER)), List.of(new Ticket()))),
-                new Ticket(null, LocalDateTime.now(), P2_DEPARTEMENT, LocalDateTime.now().plusMinutes(45), new Category(null, "Software", "Licentie", List.of(new Ticket())), new Detail(null, "Licentie verlopen", "De licenties van ons Office pakket is bijna verlopen", QUESTION, List.of(new Ticket())), new Fix(null, "De afdeling inkoop is bezig met een verlenging", "Wij kijken er naar uit!", IN_PROGRESS), List.of(new Screenshot()), new User("Test02", "$2a$10$.k.Ug5Pf7CGRf/QIw5zuy.BYCH17d5R.IlxHxS1r5SeZXgD6ptKRW", AGENT, "Test02@novi.nl", Set.of(new Authority("Test02", AGENT)), List.of(new Ticket()))),
-                new Ticket(null, LocalDateTime.now(), P3_TEAM, LocalDateTime.now().plusMinutes(30), new Category(null, "Netwerk", "Internet", List.of(new Ticket())), new Detail(null, "Internet traag", "Het hele bedrijf heeft soms last van trage internet", COMPLAINT, List.of(new Ticket())), new Fix(null, "Er loopt een case bij onze ISP (KPN)", "Trage afhandeling", IN_PROGRESS), List.of(new Screenshot()), new User("Test03", "$2a$10$wMMChXMeYRqPSwSP/4Nns.CrFArfWhaBfswig.ljtEjbSvnd45gn6", CLIENT, "Test03@novi.nl", Set.of(new Authority("Test03", CLIENT)), List.of(new Ticket())))
+                new Ticket(null, LocalDateTime.now(), P1_ORGANIZATION, LocalDateTime.now().plusMinutes(60), new Category(null, "Hardware", "Muis", List.of(new Ticket())), new Detail(null, "Mijn muis kan ik niet verbinden met de laptop (Dell)", "Geen verbinding", MALFUNCTION, List.of(new Ticket())), new Fix(null, "Maak opnieuw verbinding via bluetooth.", "Uitstekende oplossing", IN_PROGRESS), List.of(new Screenshot()),"Test_Manager"),
+                new Ticket(null, LocalDateTime.now(), P2_DEPARTEMENT, LocalDateTime.now().plusMinutes(45), new Category(null, "Software", "Licentie", List.of(new Ticket())), new Detail(null, "Licentie verlopen", "De licenties van ons Office pakket is bijna verlopen", QUESTION, List.of(new Ticket())), new Fix(null, "De afdeling inkoop is bezig met een verlenging", "Wij kijken er naar uit!", IN_PROGRESS), List.of(new Screenshot()), "Test_Agent"),
+                new Ticket(null, LocalDateTime.now(), P3_TEAM, LocalDateTime.now().plusMinutes(30), new Category(null, "Netwerk", "Internet", List.of(new Ticket())), new Detail(null, "Internet traag", "Het hele bedrijf heeft soms last van trage internet", COMPLAINT, List.of(new Ticket())), new Fix(null, "Er loopt een case bij onze ISP (KPN)", "Trage afhandeling", IN_PROGRESS), List.of(new Screenshot()), "Test_Client")
         );
 
 
@@ -70,16 +74,30 @@ public class TicketControllerIntegrationTests {
             .andExpect(jsonPath("$[2].fix.feedback").value("Trage afhandeling"));
     }
 
+//    @Test
+//    void testGetTicket() throws Exception {
+//        mockMvc.perform(get("/tickets/" + ticketRepository.getOne("CASE00003").getId()))
+//                .andExpect(status().isOk())
+//                .andExpect(jsonPath("$.priority").value("p3_team"))
+//                .andExpect(jsonPath("$.category.categoryName").value("Netwerk"))
+//                .andExpect(jsonPath("$.category.subCategoryName").value("Internet"))
+//                .andExpect(jsonPath("$.detail.title").value("Internet traag"))
+//                .andExpect(jsonPath("$.fix.solution").value("Er loopt een case bij onze ISP (KPN)"))
+//                .andExpect(jsonPath("$.username").value("Test_Client"));
+//
+//    }
+
+
     @Test
     void testGetTicket() throws Exception {
-        mockMvc.perform(get("/tickets/" + ticketRepository.getOne(3L).getId()))
+        mockMvc.perform(get("/tickets/" + ticketRepository.findAll().get(2).getId()))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.priority").value("p3_team"))
                 .andExpect(jsonPath("$.category.categoryName").value("Netwerk"))
                 .andExpect(jsonPath("$.category.subCategoryName").value("Internet"))
                 .andExpect(jsonPath("$.detail.title").value("Internet traag"))
                 .andExpect(jsonPath("$.fix.solution").value("Er loopt een case bij onze ISP (KPN)"))
-                .andExpect(jsonPath("$.user.username").value("Test03"));
+                .andExpect(jsonPath("$.user").value("Test_Client"));
 
     }
 

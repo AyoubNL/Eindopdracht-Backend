@@ -1,12 +1,9 @@
 package nl.novi.backend_it_helpdesk.models;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
+import nl.novi.backend_it_helpdesk.config.CaId;
 import nl.novi.backend_it_helpdesk.enums.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.springframework.data.annotation.CreatedBy;
@@ -26,8 +23,8 @@ import java.util.List;
 public class Ticket {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @CaId
+    private String id;
     @Column(updatable = false)
     @CreationTimestamp
     private LocalDateTime createdAt;
@@ -52,9 +49,8 @@ public class Ticket {
     List<Screenshot> screenshots = new ArrayList<>();
 
     @CreatedBy
-    @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "user_id")
-    private User user;
+    @Column(updatable = false, name = "user_id")
+    private String user;
 
     public Ticket(long l, LocalDateTime now, PriorityTicketEnum priorityTicketEnum, LocalDateTime localDateTime) {
     }

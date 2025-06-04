@@ -12,7 +12,7 @@ import nl.novi.backend_it_helpdesk.enums.StatusTicketEnum;
 @AllArgsConstructor
 public class FixOutputDto {
 
-    private Long id;
+    private String id;
     private String solution;
     private String feedback;
     private StatusTicketEnum status;

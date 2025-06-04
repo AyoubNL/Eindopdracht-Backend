@@ -2,6 +2,7 @@ package nl.novi.backend_it_helpdesk.services;
 
 import nl.novi.backend_it_helpdesk.dtos.UserInputDto;
 import nl.novi.backend_it_helpdesk.dtos.UserOutputDto;
+import nl.novi.backend_it_helpdesk.exceptions.NotAuthorizedUserException;
 import nl.novi.backend_it_helpdesk.exceptions.UsernameNotFoundException;
 import nl.novi.backend_it_helpdesk.models.Authority;
 import nl.novi.backend_it_helpdesk.models.Ticket;
@@ -18,6 +19,11 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.mockito.junit.jupiter.MockitoSettings;
 import org.mockito.quality.Strictness;
+import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.*;
@@ -49,11 +55,19 @@ class UserServiceTest {
     @BeforeEach
     void setUp() {
 
-        mockUsers = Arrays.asList(new User("Test01", "$2a$10$oh2jnssxP9pT/TcHPfhXb.au5/Fn1.7/AO.A1dRKA1jhunmuybd0.", MANAGER, "Test01@novi.nl", Set.of(new Authority("Test01", MANAGER)), List.of(new Ticket())),
-                new User("Test02", "$2a$10$.k.Ug5Pf7CGRf/QIw5zuy.BYCH17d5R.IlxHxS1r5SeZXgD6ptKRW", AGENT, "Test02@novi.nl", Set.of(new Authority("Test02", AGENT)), List.of(new Ticket()))
+        Authentication authentication = new UsernamePasswordAuthenticationToken(
+                "Test_Manager",
+                "geheim",
+                List.of(new SimpleGrantedAuthority("manager"))
         );
 
-        userInputDto = new UserInputDto("Test03", "$2a$10$wMMChXMeYRqPSwSP/4Nns.CrFArfWhaBfswig.ljtEjbSvnd45gn6", CLIENT, "Test03@novi.nl");
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+
+        mockUsers = Arrays.asList(new User("Test_Manager", "$2a$10$oh2jnssxP9pT/TcHPfhXb.au5/Fn1.7/AO.A1dRKA1jhunmuybd0.", MANAGER, "Test01@novi.nl", Set.of(new Authority("Test01", MANAGER)), List.of(new Ticket())),
+                new User("Test_Agent", "$2a$10$.k.Ug5Pf7CGRf/QIw5zuy.BYCH17d5R.IlxHxS1r5SeZXgD6ptKRW", AGENT, "Test02@novi.nl", Set.of(new Authority("Test02", AGENT)), List.of(new Ticket()))
+        );
+
+        userInputDto = new UserInputDto("Test_Manager", "$2a$10$wMMChXMeYRqPSwSP/4Nns.CrFArfWhaBfswig.ljtEjbSvnd45gn6", CLIENT, "Test03@novi.nl");
 
 
         userInputDtoNull = new UserInputDto(null, null, null, null);
@@ -63,15 +77,15 @@ class UserServiceTest {
     @DisplayName("GetUser")
     void testGetUser() {
 
-        when(userRepository.findById("Test01")).thenReturn(Optional.of(mockUsers.getFirst()));
+        when(userRepository.findById("Test_Manager")).thenReturn(Optional.of(mockUsers.getFirst()));
 
-        Optional<UserOutputDto> result = Optional.ofNullable(userService.getUser("Test01"));
+        Optional<UserOutputDto> result = Optional.ofNullable(userService.getUser("Test_Manager"));
 
         assertTrue(result.isPresent());
 
         assertFalse(mockUsers.isEmpty());
 
-        assertEquals("Test01", result.get().getUsername());
+        assertEquals("Test_Manager", result.get().getUsername());
         assertEquals("Test01@novi.nl", result.get().getEmail());
 
     }
@@ -91,8 +105,8 @@ class UserServiceTest {
         List<UserOutputDto> result = userService.getAllUsers();
 
         assertEquals(2, result.size());
-        assertEquals("Test01", result.get(0).getUsername());
-        assertEquals("Test02", result.get(1).getUsername());
+        assertEquals("Test_Manager", result.get(0).getUsername());
+        assertEquals("Test_Agent", result.get(1).getUsername());
         assertEquals("Test01@novi.nl", result.get(0).getEmail());
         assertEquals("Test02@novi.nl", result.get(1).getEmail());
 
@@ -124,27 +138,33 @@ class UserServiceTest {
     @DisplayName("DeleteUser")
     void testDeleteUser() {
 
-        userService.deleteUser("Test01");
+        when(userRepository.existsById("Test_Manager")).thenReturn(true);
 
-        verify(userRepository).deleteById("Test01");
+        userService.deleteUser("Test_Manager");
 
+        verify(userRepository).deleteById("Test_Manager");
+
+    }
+
+    @Test
+    @DisplayName("throwExceptionDeleteUser")
+    void testDeleteUserThrowsException() {
+        assertThrows(EmptyResultDataAccessException.class, () -> userService.deleteUser("Test_X"));
     }
 
     @Test
     @DisplayName("UpdateUser")
     void testUpdateUser() {
 
-        when(userRepository.existsById("Test01")).thenReturn(true);
+        when(userRepository.existsById("Test_Manager")).thenReturn(true);
 
-        when(userRepository.findById("Test01")).thenReturn(Optional.of(mockUsers.getFirst()));
+        when(userRepository.findById("Test_Manager")).thenReturn(Optional.of(mockUsers.getFirst()));
 
-        userService.updateUser("Test01", userInputDto);
+        userService.updateUser("Test_Manager", userInputDto);
 
         verify(userRepository, times(1)).save(captor.capture());
 
         User captured = captor.getValue();
-
-//        captured.setPassword(passwordEncoder.encode(userInputDto.getPassword()));
 
         assertEquals(userInputDto.getEmail(), captured.getEmail());
         assertEquals(userInputDto.getRole(), captured.getRole());
@@ -153,14 +173,34 @@ class UserServiceTest {
     }
 
     @Test
+    @DisplayName("UpdateUserAuthThrowsException")
+    void testUpdateUserAuthThrowsException() {
+
+        Authentication authentication = new UsernamePasswordAuthenticationToken(
+                "Test_Agent",
+                "geheim",
+                List.of(new SimpleGrantedAuthority("agent"))
+        );
+
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+
+        when(userRepository.existsById("Test_Manager")).thenReturn(true);
+
+        when(userRepository.findById("Test_Manager")).thenReturn(Optional.of(mockUsers.getFirst()));
+
+        assertThrows(NotAuthorizedUserException.class, () -> userService.updateUser("Test_Manager", userInputDto));
+
+    }
+
+    @Test
     @DisplayName("UpdateUserNull")
     void testUpdateUserNull() {
 
-        when(userRepository.existsById("Test01")).thenReturn(true);
+        when(userRepository.existsById("Test_Manager")).thenReturn(true);
 
-        when(userRepository.findById("Test01")).thenReturn(Optional.of(mockUsers.getFirst()));
+        when(userRepository.findById("Test_Manager")).thenReturn(Optional.of(mockUsers.getFirst()));
 
-        userService.updateUser("Test01", userInputDtoNull);
+        userService.updateUser("Test_Manager", userInputDtoNull);
 
         verify(userRepository, times(1)).save(captor.capture());
 

@@ -1,9 +1,7 @@
 package nl.novi.backend_it_helpdesk.dtos;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import jakarta.validation.Valid;
+import lombok.*;
 import nl.novi.backend_it_helpdesk.enums.PriorityTicketEnum;
 import nl.novi.backend_it_helpdesk.models.*;
 
@@ -17,18 +15,19 @@ import java.util.List;
 public class TicketInputDto {
 
     private PriorityTicketEnum priority;
-    private UserInputDto user;
+    @Valid
     private CategoryInputDto category;
+    @Valid
     private DetailInputDto detail;
+    @Valid
     private FixInputDto fix;
     List<Screenshot> screenshots = new ArrayList<>();
 
-    public TicketInputDto(PriorityTicketEnum priorityTicketEnum, CategoryInputDto categoryInputDto, FixInputDto fixInputDto, DetailInputDto detailInputDto, UserInputDto userInputDto) {
+    public TicketInputDto(PriorityTicketEnum priorityTicketEnum, CategoryInputDto categoryInputDto, FixInputDto fixInputDto, DetailInputDto detailInputDto) {
         this.priority = priorityTicketEnum;
         this.category = categoryInputDto;
         this.fix = fixInputDto;
         this.detail = detailInputDto;
-        this.user = userInputDto;
     }
 
     public TicketInputDto(PriorityTicketEnum priorityTicketEnum, FixInputDto fixInputDto, DetailInputDto detailInputDto, UserInputDto test04) {

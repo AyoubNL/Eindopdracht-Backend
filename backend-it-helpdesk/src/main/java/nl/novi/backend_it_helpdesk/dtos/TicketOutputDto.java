@@ -5,11 +5,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nl.novi.backend_it_helpdesk.enums.PriorityTicketEnum;
-import nl.novi.backend_it_helpdesk.models.*;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 @Getter
@@ -18,8 +16,8 @@ import java.util.List;
 @AllArgsConstructor
 public class TicketOutputDto {
 
-    private Long id;
-    private UserOutputDto user;
+    private String id;
+    private String user;
     private LocalDateTime createdAt;
     private PriorityTicketEnum priority;
     private CategoryOutputDto category;

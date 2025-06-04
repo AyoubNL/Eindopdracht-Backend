@@ -3,10 +3,16 @@ package nl.novi.backend_it_helpdesk.services;
 import jakarta.validation.Valid;
 import nl.novi.backend_it_helpdesk.dtos.DetailInputDto;
 import nl.novi.backend_it_helpdesk.dtos.DetailOutputDto;
+import nl.novi.backend_it_helpdesk.exceptions.NotAuthorizedUserException;
 import nl.novi.backend_it_helpdesk.exceptions.RecordNotFoundException;
 import nl.novi.backend_it_helpdesk.mappers.DetailMapper;
 import nl.novi.backend_it_helpdesk.models.Detail;
+import nl.novi.backend_it_helpdesk.models.Ticket;
 import nl.novi.backend_it_helpdesk.repositories.DetailRepository;
+import nl.novi.backend_it_helpdesk.repositories.TicketRepository;
+import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -17,14 +23,16 @@ import java.util.Optional;
 public class DetailService {
 
     final private DetailRepository detailRepository;
+    final private TicketRepository ticketRepository;
 
-    public DetailService(DetailRepository detailRepository) {
+    public DetailService(DetailRepository detailRepository, TicketRepository ticketRepository) {
         this.detailRepository = detailRepository;
+        this.ticketRepository = ticketRepository;
     }
 
-    public DetailOutputDto getDetailById(Long id) {
+    public DetailOutputDto getDetailById(String id) {
 
-        Optional<Detail> detail = detailRepository.findById(id);
+        Optional<Detail> detail = detailRepository.findById(id.toUpperCase());
 
         if (detail.isPresent()) {
             DetailOutputDto dto = DetailMapper.transferToDto(detail.get());
@@ -57,31 +65,51 @@ public class DetailService {
 
     }
 
-    public void deleteDetail(Long id) {
-        detailRepository.deleteById(id);
+    public void deleteDetail(String id) {
+
+        if(detailRepository.existsById(id.toUpperCase())) {
+
+            detailRepository.deleteById(id.toUpperCase());
+        }
+        else{
+            throw new EmptyResultDataAccessException("Onbekende entiteit", 1);
+        }
+
     }
 
-    public DetailOutputDto updateDetail(Long id, @Valid DetailInputDto updateDetail) {
+    public DetailOutputDto updateDetail(String id, DetailInputDto updateDetail) {
 
-        Detail dl = detailRepository.findById(id).get();
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String currentUser = authentication.getName();
+
+        Detail dl = detailRepository.findById(id.toUpperCase()).get();
         Detail dl1 = DetailMapper.transferToDetail(updateDetail);
 
-        if (detailRepository.findById(id).isPresent()) {
+        if (detailRepository.findById(id.toUpperCase()).isPresent()) {
 
-            dl1.setId(dl.getId());
+            Ticket tk = ticketRepository.findById(id.toUpperCase()).get();
 
-            if (dl1.getType() == null) {
-                dl1.setType(dl.getType());
-            }
-            if (dl1.getDescription() == null) {
-                dl1.setDescription(dl.getDescription());
-            }
-            if (dl1.getTitle() == null) {
-                dl1.setTitle(dl.getTitle());
-            }
+            if (currentUser.equals(tk.getUser())){
 
-            detailRepository.save(dl1);
-            return DetailMapper.transferToDto(dl1);
+                dl1.setId(dl.getId());
+
+                if (dl1.getType() == null) {
+                    dl1.setType(dl.getType());
+                }
+                if (dl1.getDescription() == null) {
+                    dl1.setDescription(dl.getDescription());
+                }
+                if (dl1.getTitle() == null) {
+                    dl1.setTitle(dl.getTitle());
+                }
+                detailRepository.save(dl1);
+
+                return DetailMapper.transferToDto(dl1);
+
+            }
+            else{
+                throw new NotAuthorizedUserException("De gebruiker " + currentUser+ " is niet gemachtigd, om aanpassingen te doen aan " +id);}
+
         } else {
             throw new RecordNotFoundException("Het detailnummer: " + id + " is onbekend");
         }

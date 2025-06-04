@@ -1,41 +1,43 @@
 package nl.novi.backend_it_helpdesk.services;
 
-import jakarta.validation.Valid;
 import nl.novi.backend_it_helpdesk.dtos.CategoryInputDto;
 import nl.novi.backend_it_helpdesk.dtos.CategoryOutputDto;
+import nl.novi.backend_it_helpdesk.exceptions.NotAuthorizedUserException;
 import nl.novi.backend_it_helpdesk.exceptions.RecordNotFoundException;
 import nl.novi.backend_it_helpdesk.mappers.CategoryMapper;
 import nl.novi.backend_it_helpdesk.models.Category;
+import nl.novi.backend_it_helpdesk.models.Ticket;
 import nl.novi.backend_it_helpdesk.repositories.CategoryRepository;
+import nl.novi.backend_it_helpdesk.repositories.TicketRepository;
+import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 import static nl.novi.backend_it_helpdesk.mappers.CategoryMapper.*;
-import static nl.novi.backend_it_helpdesk.mappers.TicketMapper.transferToDto;
 
 @Service
 public class CategoryService {
 
     final private CategoryRepository categoryRepository;
+    final private TicketRepository ticketRepository;
 
-    public CategoryService(CategoryRepository categoryRepository) {
+    public CategoryService(CategoryRepository categoryRepository, TicketRepository ticketRepository) {
         this.categoryRepository = categoryRepository;
+        this.ticketRepository = ticketRepository;
+
     }
 
-    public CategoryOutputDto getCategoryById(Long id){
+    public CategoryOutputDto getCategoryById(String id) {
 
-        if(categoryRepository.findById(id).isPresent()){
-            Category category = categoryRepository.findById(id).get();
-
+        if (categoryRepository.findById(id.toUpperCase()).isPresent()) {
+            Category category = categoryRepository.findById(id.toUpperCase()).get();
             return CategoryMapper.transferToDto(category);
-        }
-
-        else {
+        } else {
             throw new RecordNotFoundException("Het categorienummer:" + id + " is onbekend");
         }
-
-
 
     }
 
@@ -54,26 +56,40 @@ public class CategoryService {
         return CategoryMapper.transferToDto(cat);
     }
 
-    public void deleteTicket(Long id) {
+    public void deleteTicket(String id) {
 
-        categoryRepository.deleteById(id);
+        if (categoryRepository.existsById(id.toUpperCase())) {
+
+            categoryRepository.deleteById(id.toUpperCase());
+        } else {
+            throw new EmptyResultDataAccessException("Onbekende entiteit", 1);
+        }
+
     }
 
-    public CategoryOutputDto updateCategory(Long id, CategoryInputDto updateCategory) {
+    public CategoryOutputDto updateCategory(String id, CategoryInputDto updateCategory) {
 
-        if(categoryRepository.findById(id).isPresent()){
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String currentUser = authentication.getName();
 
-            Category cg = categoryRepository.findById(id).get();
+        if (categoryRepository.findById(id.toUpperCase()).isPresent()) {
 
-            Category cg1 = transferToCategory(updateCategory);
-            cg1.setId(cg.getId());
+            Ticket tk = ticketRepository.findById(id.toUpperCase()).get();
 
-            categoryRepository.save(cg1);
+            if (currentUser.equals(tk.getUser())){
 
-            return CategoryMapper.transferToDto(cg1);
+                Category cg = categoryRepository.findById(id.toUpperCase()).get();
+                Category cg1 = transferToCategory(updateCategory);
+                cg1.setId(cg.getId());
 
-        }
-        else {
+                categoryRepository.save(cg1);
+
+                return CategoryMapper.transferToDto(cg1);
+            }
+            else{
+                throw new NotAuthorizedUserException("De gebruiker " + currentUser+ " is niet gemachtigd, om aanpassingen te doen aan " +id);}
+
+        } else {
             throw new RecordNotFoundException("Het categorienummer:" + id + " is onbekend");
         }
     }

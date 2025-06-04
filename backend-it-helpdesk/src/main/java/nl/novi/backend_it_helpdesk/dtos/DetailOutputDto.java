@@ -12,7 +12,7 @@ import nl.novi.backend_it_helpdesk.enums.TypeTicketEnum;
 @AllArgsConstructor
 public class DetailOutputDto {
 
-    private Long id;
+    private String id;
     private String title;
     private String description;
     private TypeTicketEnum type;
