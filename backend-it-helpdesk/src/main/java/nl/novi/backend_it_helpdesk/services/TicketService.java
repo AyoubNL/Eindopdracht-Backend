@@ -90,7 +90,7 @@ public class TicketService {
                 List<Ticket> ticketListP4 = ticketRepository.findAllByPriority(PriorityTicketEnum.P4_INDIVIDUAL);
                 return transferTicketListToDtoList(ticketListP4);
             default:
-                throw new IllegalArgumentException("De volgende prioriteit is onbekend: " + priorityTicketEnum);
+                throw new IllegalArgumentException("Prioriteit " +priorityTicketEnum+ " is onbekend.");
         }
 
 
