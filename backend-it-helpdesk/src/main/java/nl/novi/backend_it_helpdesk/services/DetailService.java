@@ -1,6 +1,8 @@
 package nl.novi.backend_it_helpdesk.services;
 
-import jakarta.validation.Valid;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import nl.novi.backend_it_helpdesk.dtos.DetailInputDto;
 import nl.novi.backend_it_helpdesk.dtos.DetailOutputDto;
 import nl.novi.backend_it_helpdesk.exceptions.NotAuthorizedUserException;
@@ -11,9 +13,11 @@ import nl.novi.backend_it_helpdesk.models.Ticket;
 import nl.novi.backend_it_helpdesk.repositories.DetailRepository;
 import nl.novi.backend_it_helpdesk.repositories.TicketRepository;
 import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,6 +33,8 @@ public class DetailService {
         this.detailRepository = detailRepository;
         this.ticketRepository = ticketRepository;
     }
+
+    private static final String apiUrl = "https://api.mymemory.translated.net/get?q=BESCHRIJVING&langpair=nl|en";
 
     public DetailOutputDto getDetailById(String id) {
 
@@ -116,5 +122,36 @@ public class DetailService {
 
     }
 
+    public DetailOutputDto translateDetail(String id) throws JsonProcessingException {
+
+        Optional<Detail> detail = detailRepository.findById(id.toUpperCase());
+
+        if (detail.isPresent()) {
+
+            String beschrijving = detail.get().getDescription();
+            String finalAPI = apiUrl.replace("BESCHRIJVING", beschrijving);
+
+            RestTemplate restTemplate = new RestTemplate();
+            String trans = restTemplate.getForObject(finalAPI, String.class);
+
+            ObjectMapper mapper = new ObjectMapper();
+
+            JsonNode jsonRoot = mapper.readTree(trans);
+
+            String transValue = jsonRoot.get("responseData").get("translatedText").toString().replace("\"","");
+
+            detail.get().setDescription(transValue);
+
+            detailRepository.save(detail.get());
+
+            return DetailMapper.transferToDto(detail.get());
+        }
+        else {
+            throw new RecordNotFoundException("Het detailnummer: " + id + " is onbekend");
+        }
+
+
+
+    }
 }
 
