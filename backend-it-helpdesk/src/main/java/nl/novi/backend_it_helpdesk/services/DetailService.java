@@ -13,7 +13,6 @@ import nl.novi.backend_it_helpdesk.models.Ticket;
 import nl.novi.backend_it_helpdesk.repositories.DetailRepository;
 import nl.novi.backend_it_helpdesk.repositories.TicketRepository;
 import org.springframework.dao.EmptyResultDataAccessException;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -126,19 +125,16 @@ public class DetailService {
     public DetailOutputDto translateDetail(String id) throws JsonProcessingException {
 
         Optional<Detail> detail = detailRepository.findById(id.toUpperCase());
-
+        RestTemplate restTemplate = new RestTemplate();
+        ObjectMapper mapper = new ObjectMapper();
         if (detail.isPresent()) {
 
             String beschrijving = detail.get().getDescription();
 
             try {
                 String finalAPI = apiUrl.replace("BESCHRIJVING", beschrijving);
-                RestTemplate restTemplate = new RestTemplate();
                 String trans = restTemplate.getForObject(finalAPI, String.class);
-
-                ObjectMapper mapper = new ObjectMapper();
                 JsonNode jsonRoot = mapper.readTree(trans);
-
                 String transValue = jsonRoot.get("responseData").get("translatedText").toString().replace("\"", "");
 
                 detail.get().setDescription(transValue);
