@@ -17,6 +17,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.ArrayList;
@@ -129,19 +130,22 @@ public class DetailService {
         if (detail.isPresent()) {
 
             String beschrijving = detail.get().getDescription();
-            String finalAPI = apiUrl.replace("BESCHRIJVING", beschrijving);
 
-            RestTemplate restTemplate = new RestTemplate();
-            String trans = restTemplate.getForObject(finalAPI, String.class);
+            try {
+                String finalAPI = apiUrl.replace("BESCHRIJVING", beschrijving);
+                RestTemplate restTemplate = new RestTemplate();
+                String trans = restTemplate.getForObject(finalAPI, String.class);
 
-            ObjectMapper mapper = new ObjectMapper();
+                ObjectMapper mapper = new ObjectMapper();
+                JsonNode jsonRoot = mapper.readTree(trans);
 
-            JsonNode jsonRoot = mapper.readTree(trans);
+                String transValue = jsonRoot.get("responseData").get("translatedText").toString().replace("\"", "");
 
-            String transValue = jsonRoot.get("responseData").get("translatedText").toString().replace("\"","");
-
-            detail.get().setDescription(transValue);
-
+                detail.get().setDescription(transValue);
+            }
+            catch (RestClientException e) {
+              throw new RestClientException("De vertaling is mislukt" + e.getMessage());
+            }
             detailRepository.save(detail.get());
 
             return DetailMapper.transferToDto(detail.get());
