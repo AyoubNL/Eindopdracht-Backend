@@ -1,6 +1,8 @@
 package nl.novi.backend_it_helpdesk.services;
 
-import jakarta.validation.Valid;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import nl.novi.backend_it_helpdesk.dtos.DetailInputDto;
 import nl.novi.backend_it_helpdesk.dtos.DetailOutputDto;
 import nl.novi.backend_it_helpdesk.exceptions.NotAuthorizedUserException;
@@ -14,6 +16,8 @@ import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestClientException;
+import org.springframework.web.client.RestTemplate;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,6 +33,8 @@ public class DetailService {
         this.detailRepository = detailRepository;
         this.ticketRepository = ticketRepository;
     }
+
+    private static final String apiUrl = "https://api.mymemory.translated.net/get?q=BESCHRIJVING&langpair=nl|en";
 
     public DetailOutputDto getDetailById(String id) {
 
@@ -116,5 +122,36 @@ public class DetailService {
 
     }
 
+    public DetailOutputDto translateDetail(String id) throws JsonProcessingException {
+
+        Optional<Detail> detail = detailRepository.findById(id.toUpperCase());
+        RestTemplate restTemplate = new RestTemplate();
+        ObjectMapper mapper = new ObjectMapper();
+        if (detail.isPresent()) {
+
+            String beschrijving = detail.get().getDescription();
+
+            try {
+                String finalAPI = apiUrl.replace("BESCHRIJVING", beschrijving);
+                String trans = restTemplate.getForObject(finalAPI, String.class);
+                JsonNode jsonRoot = mapper.readTree(trans);
+                String transValue = jsonRoot.get("responseData").get("translatedText").toString().replace("\"", "");
+
+                detail.get().setDescription(transValue);
+            }
+            catch (RestClientException e) {
+              throw new RestClientException("De vertaling is mislukt" + e.getMessage());
+            }
+            detailRepository.save(detail.get());
+
+            return DetailMapper.transferToDto(detail.get());
+        }
+        else {
+            throw new RecordNotFoundException("Het detailnummer: " + id + " is onbekend");
+        }
+
+
+
+    }
 }
 

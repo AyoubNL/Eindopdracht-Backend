@@ -1,12 +1,12 @@
 package nl.novi.backend_it_helpdesk.controllers;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import jakarta.validation.Valid;
 import nl.novi.backend_it_helpdesk.dtos.DetailInputDto;
 import nl.novi.backend_it_helpdesk.dtos.DetailOutputDto;
 import nl.novi.backend_it_helpdesk.repositories.DetailRepository;
 import nl.novi.backend_it_helpdesk.services.DetailService;
-import org.apache.coyote.Response;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
@@ -19,6 +19,7 @@ public class DetailController {
 
     final private DetailService detailService;
     private final DetailRepository detailRepository;
+
 
     public DetailController(DetailService detailService, DetailRepository detailRepository) {
         this.detailService = detailService;
@@ -48,6 +49,16 @@ public class DetailController {
         List<DetailOutputDto> dtos = detailService.getAllDetails();
 
         return ResponseEntity.ok().body(dtos);
+    }
+
+    @GetMapping("/translate/{id}")
+    public ResponseEntity<DetailOutputDto> translateDetail(@PathVariable String id) throws JsonProcessingException {
+
+        DetailOutputDto dto = detailService.translateDetail(id);
+
+        return ResponseEntity.ok().body(dto);
+
+
     }
 
     @PostMapping
